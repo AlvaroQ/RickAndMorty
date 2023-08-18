@@ -3,4 +3,8 @@
     <string name="error_connectivity">Error de conexión</string>
     <string name="error_server">Error de servidor</string>
     <string name="error_unknown">Error desconocido</string>
+    <string name="gender">Gender is %s</string>
+    <string name="status">Status is %s</string>
+    <string name="species">Species is %s</string>
+    <string name="type">Type is %s</string>
 </resources>

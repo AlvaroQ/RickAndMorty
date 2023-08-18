@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class ServerApi {
     private val baseUrl = "https://rickandmortyapi.com/api/"
 
-    val okHttpClient = HttpLoggingInterceptor().run {
+    private val okHttpClient = HttpLoggingInterceptor().run {
         level = HttpLoggingInterceptor.Level.BODY
         OkHttpClient.Builder().addInterceptor(this).build()
     }

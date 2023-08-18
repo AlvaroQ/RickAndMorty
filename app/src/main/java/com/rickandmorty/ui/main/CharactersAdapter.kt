@@ -7,15 +7,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.rickandmorty.common.glideLoadURL
 import com.rickandmorty.databinding.ItemCharacterBinding
 import com.rickandmorty.domain.Character
 
-class CharactersAdapter(private val listener: CharacterItemListener) : RecyclerView.Adapter<CharacterViewHolder>() {
-
-    interface CharacterItemListener {
-        fun onClickedCharacter(characterId: Int)
-    }
-
+class CharactersAdapter(private val listener: (Character) -> Unit) : RecyclerView.Adapter<CharacterViewHolder>() {
     private val items = ArrayList<Character>()
 
     @SuppressLint("NotifyDataSetChanged")
@@ -27,36 +23,25 @@ class CharactersAdapter(private val listener: CharacterItemListener) : RecyclerV
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharacterViewHolder {
         val binding: ItemCharacterBinding = ItemCharacterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return CharacterViewHolder(binding, listener)
+        return CharacterViewHolder(binding)
     }
 
     override fun getItemCount(): Int = items.size
 
-    override fun onBindViewHolder(holder: CharacterViewHolder, position: Int) = holder.bind(items[position])
+    override fun onBindViewHolder(holder: CharacterViewHolder, position: Int) {
+        val character = items[position]
+        holder.bind(character)
+        holder.itemView.setOnClickListener { listener(character) }
+    }
 }
 
-class CharacterViewHolder(private val itemBinding: ItemCharacterBinding, private val listener: CharactersAdapter.CharacterItemListener) : RecyclerView.ViewHolder(itemBinding.root),
-    View.OnClickListener {
-
+class CharacterViewHolder(private val itemBinding: ItemCharacterBinding) : RecyclerView.ViewHolder(itemBinding.root) {
     private lateinit var character: Character
 
-    init {
-        itemBinding.root.setOnClickListener(this)
-    }
-
-    @SuppressLint("SetTextI18n")
     fun bind(item: Character) {
         this.character = item
         itemBinding.nameCharacter.text = item.name
-        itemBinding.descriptionCharacter.text = """${item.species} - ${item.status}"""
-        Glide.with(itemBinding.root)
-            .load(item.image)
-            .transform(CircleCrop())
-            .into(itemBinding.imageCharacter)
-    }
-
-    override fun onClick(v: View?) {
-        listener.onClickedCharacter(character.id)
+        glideLoadURL(item.image, itemBinding.imageCharacter)
     }
 }
 

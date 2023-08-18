@@ -5,9 +5,12 @@ import com.rickandmorty.managers.ServerApi
 import com.rickandmorty.data.repository.CharacterRepository
 import com.rickandmorty.data.source.CharacterDataSource
 import com.rickandmorty.datasource.CharacterDataSourceImpl
+import com.rickandmorty.ui.detail.DetailActivity
+import com.rickandmorty.ui.detail.DetailViewModel
 import com.rickandmorty.ui.main.MainActivity
 import com.rickandmorty.ui.main.MainViewModel
 import com.rickandmorty.usecases.GetCharacter
+import com.rickandmorty.usecases.GetCharacterById
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
@@ -39,5 +42,9 @@ private val scopesModule = module {
     scope(named<MainActivity>()) {
         viewModel { MainViewModel(get()) }
         scoped { GetCharacter(get()) }
+    }
+    scope(named<DetailActivity>()) {
+        viewModel { (id: Int) -> DetailViewModel(id, get()) }
+        scoped { GetCharacterById(get()) }
     }
 }

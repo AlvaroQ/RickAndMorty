@@ -28,15 +28,6 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/imageCharacter"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/descriptionCharacter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginTop="5dp"
-        tools:text="TextView"
-        app:layout_constraintStart_toEndOf="@+id/imageCharacter"
-        app:layout_constraintTop_toBottomOf="@+id/nameCharacter" />
+        app:layout_constraintTop_toTopOf="@+id/imageCharacter"
+        app:layout_constraintBottom_toBottomOf="@+id/imageCharacter"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
