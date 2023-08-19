@@ -26,4 +26,12 @@ class CharacterRepository(private val characterDataSource: CharacterDataSource) 
             e.toError().left()
         }
     }
+
+    suspend fun getCharactersFiltered(nameFiltered: String): Either<Error, CharacterList> {
+        return try {
+            characterDataSource.getCharactersFiltered(nameFiltered).right()
+        } catch (e: Exception) {
+            e.toError().left()
+        }
+    }
 }

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
 import com.rickandmorty.R
@@ -27,4 +28,11 @@ fun Context.errorToString(error: Error) = when(error) {
     Error.Connectivity -> getString(R.string.error_connectivity)
     is Error.Server -> getString(R.string.error_server) + error.code
     is Error.Unknown -> getString(R.string.error_unknown) + error.message
+}
+
+fun Activity.hideKeyboard() {
+    currentFocus?.let { view ->
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(view.windowToken, 0)
+    }
 }

@@ -7,4 +7,5 @@
     <string name="status">Status is %s</string>
     <string name="species">Species is %s</string>
     <string name="type">Type is %s</string>
+    <string name="query_hint">Search something</string>
 </resources>

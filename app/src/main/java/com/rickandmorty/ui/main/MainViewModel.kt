@@ -10,8 +10,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import com.rickandmorty.data.Error
 import com.rickandmorty.domain.Character
+import com.rickandmorty.usecases.GetCharactersFiltered
 
-class MainViewModel (private val getCharacter: GetCharacter) : ScopedViewModel() {
+class MainViewModel (
+    private val getCharacter: GetCharacter,
+    private val getCharacterFiltered: GetCharactersFiltered) : ScopedViewModel() {
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state.asStateFlow()
 
@@ -23,8 +26,26 @@ class MainViewModel (private val getCharacter: GetCharacter) : ScopedViewModel()
         }
     }
 
+    fun findFilteredCharacters(nameFiltered: String) {
+        viewModelScope.launch {
+            _state.value = UiState(loading = true)
+            requestFilteredCharacters(nameFiltered)
+            _state.value = UiState(loading = false)
+        }
+    }
+
     private suspend fun requestCharacters() {
         val characterListResponse = getCharacter()
+        characterListResponse.fold(
+            { exception ->
+                _state.value = UiState(error = exception)
+            }, { characterList ->
+                _state.value = UiState(characterList = characterList)
+            })
+    }
+
+    private suspend fun requestFilteredCharacters(nameFiltered: String) {
+        val characterListResponse = getCharacterFiltered(nameFiltered)
         characterListResponse.fold(
             { exception ->
                 _state.value = UiState(error = exception)

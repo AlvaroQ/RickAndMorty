@@ -14,4 +14,8 @@ class CharacterDataSourceImpl(private val serverApi: ServerApi): CharacterDataSo
     override suspend fun getCharacterById(id: Int): Character {
         return serverApi.service.getCharacterById(id)
     }
+
+    override suspend fun getCharactersFiltered(nameFiltered: String): CharacterList {
+        return serverApi.service.getCharactersFiltered(nameFiltered)
+    }
 }
