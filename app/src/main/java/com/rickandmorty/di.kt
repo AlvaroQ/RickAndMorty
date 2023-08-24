@@ -11,7 +11,6 @@ import com.rickandmorty.ui.main.MainActivity
 import com.rickandmorty.ui.main.MainViewModel
 import com.rickandmorty.usecases.GetCharacter
 import com.rickandmorty.usecases.GetCharacterById
-import com.rickandmorty.usecases.GetCharactersFiltered
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
@@ -41,9 +40,8 @@ val dataModule = module {
 
 private val scopesModule = module {
     scope(named<MainActivity>()) {
-        viewModel { MainViewModel(get(), get()) }
+        viewModel { MainViewModel(get()) }
         scoped { GetCharacter(get()) }
-        scoped { GetCharactersFiltered(get()) }
     }
     scope(named<DetailActivity>()) {
         viewModel { (id: Int) -> DetailViewModel(id, get()) }

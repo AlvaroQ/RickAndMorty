@@ -8,4 +8,22 @@
     <string name="species">Species is %s</string>
     <string name="type">Type is %s</string>
     <string name="query_hint">Search something</string>
+    <string name="no_more_item_found">No more item found</string>
+    <string name="title_status">Status</string>
+    <string name="title_gender">Gender</string>
+
+    <string-array name="status_list">
+        <item>all</item>
+        <item>alive</item>
+        <item>dead</item>
+        <item>unknown</item>
+    </string-array>
+
+    <string-array name="gender_list">
+        <item>all</item>
+        <item>female</item>
+        <item>male</item>
+        <item>genderless</item>
+        <item>unknown</item>
+    </string-array>
 </resources>

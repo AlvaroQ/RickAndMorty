@@ -11,9 +11,13 @@ import com.rickandmorty.domain.CharacterList
 
 class CharacterRepository(private val characterDataSource: CharacterDataSource) {
 
-    suspend fun getCharacters(): Either<Error, CharacterList> {
+    suspend fun getCharacters(page: Int, nameFiltered: String?, statusFiltered: String?, genderFiltered: String?): Either<Error, CharacterList> {
         return try {
-            characterDataSource.getCharacters().right()
+            characterDataSource.getCharacters(
+                page = page,
+                nameFiltered = nameFiltered,
+                genderFiltered = genderFiltered,
+                statusFiltered = statusFiltered).right()
         } catch (e: Exception) {
             e.toError().left()
         }
@@ -22,14 +26,6 @@ class CharacterRepository(private val characterDataSource: CharacterDataSource) 
     suspend fun getCharacterById(id: Int): Either<Error, Character> {
         return try {
             characterDataSource.getCharacterById(id).right()
-        } catch (e: Exception) {
-            e.toError().left()
-        }
-    }
-
-    suspend fun getCharactersFiltered(nameFiltered: String): Either<Error, CharacterList> {
-        return try {
-            characterDataSource.getCharactersFiltered(nameFiltered).right()
         } catch (e: Exception) {
             e.toError().left()
         }

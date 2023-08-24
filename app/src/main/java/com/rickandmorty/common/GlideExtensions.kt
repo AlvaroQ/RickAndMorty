@@ -37,7 +37,6 @@ private fun initUrlGlide(context: Context, url: String?) =
                 dataSource: DataSource?,
                 isFirstResource: Boolean
             ): Boolean {
-                Log.d("Glide", "onResourceReady")
                 return false
             }
 

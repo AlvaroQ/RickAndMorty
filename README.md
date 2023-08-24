@@ -14,3 +14,4 @@ This is an example Android Application that follow up Clean Architecture princip
 - Error handling 
 - State flow
 - View Binding
+- Multi-filter with paging
