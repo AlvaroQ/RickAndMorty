@@ -1,26 +1,28 @@
 package com.rickandmorty.ui.detail
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.rickandmorty.common.ScopedViewModel
 import com.rickandmorty.data.Error
-import com.rickandmorty.usecases.GetCharacterById
+import com.rickandmorty.usecases.GetCharacterByIdUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import com.rickandmorty.domain.Character
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DetailViewModel(
-    private val characterId: Int,
-    private val getCharacterById: GetCharacterById): ScopedViewModel() {
+@HiltViewModel
+class DetailViewModel @Inject constructor(
+    private val getCharacterByIdUseCase: GetCharacterByIdUseCase): ViewModel() {
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state.asStateFlow()
 
-    fun findCharacter() {
+    fun findCharacter(characterId: Int) {
         viewModelScope.launch {
             _state.value = UiState(loading = true)
 
-            val characterResponse = getCharacterById(characterId)
+            val characterResponse = getCharacterByIdUseCase(characterId)
             characterResponse.fold(
                 { exception ->
                     _state.value = UiState(error = exception)

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -13,21 +14,19 @@ import com.rickandmorty.common.glideLoadURL
 import com.rickandmorty.common.viewBinding
 import com.rickandmorty.databinding.ActivityDetailBinding
 import com.rickandmorty.domain.Character
+import dagger.hilt.android.AndroidEntryPoint
+import androidx.activity.viewModels
 import kotlinx.coroutines.launch
-import org.koin.androidx.scope.ScopeActivity
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.parameter.parametersOf
 
-class DetailActivity : ScopeActivity() {
+@AndroidEntryPoint
+class DetailActivity : AppCompatActivity() {
+    private val detailViewModel: DetailViewModel by viewModels()
     private val detailBinding by viewBinding(ActivityDetailBinding::inflate)
 
     companion object {
         const val CHARACTER_ID = "DetailActivity:character"
     }
 
-    private val detailViewModel: DetailViewModel by viewModel() {
-        parametersOf(intent.getIntExtra(CHARACTER_ID, -1))
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +35,9 @@ class DetailActivity : ScopeActivity() {
         setSupportActionBar(detailBinding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        detailViewModel.findCharacter()
+        val characterId = intent.extras?.getInt(CHARACTER_ID) ?: 0
+        detailViewModel.findCharacter(characterId)
+
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 detailViewModel.state.collect(::updateUI)

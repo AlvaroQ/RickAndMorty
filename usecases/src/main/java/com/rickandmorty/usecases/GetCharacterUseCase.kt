@@ -4,8 +4,9 @@ import arrow.core.Either
 import com.rickandmorty.data.Error
 import com.rickandmorty.data.repository.CharacterRepository
 import com.rickandmorty.domain.CharacterList
+import javax.inject.Inject
 
-class GetCharacter(private val characterRepository: CharacterRepository) {
+class GetCharacterUseCase @Inject constructor(private val characterRepository: CharacterRepository) {
     suspend operator fun invoke(
         page: Int,
         nameFiltered: String? = null,

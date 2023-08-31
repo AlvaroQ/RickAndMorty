@@ -1,32 +1,32 @@
 package com.rickandmorty.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.SearchView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.rickandmorty.R
 import com.rickandmorty.common.errorToString
 import com.rickandmorty.common.hideKeyboard
 import com.rickandmorty.common.selected
-import com.rickandmorty.common.startActivity
 import com.rickandmorty.common.viewBinding
 import com.rickandmorty.databinding.ActivityMainBinding
 import com.rickandmorty.domain.Character
 import com.rickandmorty.ui.detail.DetailActivity
 import kotlinx.coroutines.launch
-import org.koin.androidx.scope.ScopeActivity
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import androidx.activity.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 
-
-class MainActivity : ScopeActivity() {
-    private val mainViewModel: MainViewModel by viewModel()
+@AndroidEntryPoint
+class MainActivity : AppCompatActivity() {
+    private val mainViewModel: MainViewModel by viewModels()
     private val mainBinding by viewBinding(ActivityMainBinding::inflate)
     private lateinit var adapter: CharactersAdapter
     private lateinit var scrollListener: RecyclerView.OnScrollListener
@@ -136,6 +136,10 @@ class MainActivity : ScopeActivity() {
         }
         if(state.noMoreItemFound) Toast.makeText(this, getString(R.string.no_more_item_found), Toast.LENGTH_LONG).show()
         state.error?.let { Toast.makeText(this, errorToString(it), Toast.LENGTH_LONG).show() }
-        state.navigateToDetail?.let { startActivity<DetailActivity> { putExtra(DetailActivity.CHARACTER_ID, it.id) } }
+        state.navigateToDetail?.let {
+            val intent = Intent(this, DetailActivity::class.java)
+            intent.putExtra(DetailActivity.CHARACTER_ID, it.id)
+            startActivity(intent)
+        }
     }
 }

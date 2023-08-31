@@ -1,18 +1,21 @@
 package com.rickandmorty.ui.main
 
 import android.net.Uri
-import androidx.lifecycle.viewModelScope
-import com.rickandmorty.common.ScopedViewModel
 import com.rickandmorty.domain.CharacterList
-import com.rickandmorty.usecases.GetCharacter
+import com.rickandmorty.usecases.GetCharacterUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import com.rickandmorty.data.Error
 import com.rickandmorty.domain.Character
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class MainViewModel (private val getCharacter: GetCharacter) : ScopedViewModel() {
+@HiltViewModel
+class MainViewModel @Inject constructor(private val getCharacterUseCase: GetCharacterUseCase) : ViewModel() {
     var nameFilter: String? = null
     var genderFilter: String? = null
     var statusFilter: String? = null
@@ -40,7 +43,7 @@ class MainViewModel (private val getCharacter: GetCharacter) : ScopedViewModel()
     }
 
     private suspend fun requestCharacters() {
-        val characterListResponse = getCharacter(
+        val characterListResponse = getCharacterUseCase(
             page = nextPage,
             nameFiltered = nameFilter,
             genderFiltered = genderFilter,

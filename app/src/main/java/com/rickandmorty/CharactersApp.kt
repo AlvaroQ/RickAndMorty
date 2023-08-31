@@ -1,11 +1,7 @@
 package com.rickandmorty
 
 import android.app.Application
+import dagger.hilt.android.HiltAndroidApp
 
-class CharactersApp : Application() {
-
-    override fun onCreate() {
-        super.onCreate()
-        initDI()
-    }
-}
+@HiltAndroidApp
+class CharactersApp : Application()
