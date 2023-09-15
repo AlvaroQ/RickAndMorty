@@ -1,36 +1,39 @@
-package com.rickandmorty.ui.detail
+package com.rickandmorty.ui.screens.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rickandmorty.data.Error
+import com.rickandmorty.domain.Character
 import com.rickandmorty.usecases.GetCharacterByIdUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import com.rickandmorty.domain.Character
-import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    private val getCharacterByIdUseCase: GetCharacterByIdUseCase): ViewModel() {
+    private val getCharacterByIdUseCase: GetCharacterByIdUseCase
+) : ViewModel() {
+
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state.asStateFlow()
 
     fun findCharacter(characterId: Int) {
         viewModelScope.launch {
-            _state.value = UiState(loading = true)
+            _state.update { it.copy(loading = true) }
 
             val characterResponse = getCharacterByIdUseCase(characterId)
             characterResponse.fold(
                 { exception ->
-                    _state.value = UiState(error = exception)
+                    _state.update { it.copy(error = exception) }
                 }, { character ->
-                    _state.value = UiState(character = character)
+                    _state.update { UiState(character = character) }
                 })
 
-            _state.value = UiState(loading = false)
+            _state.update { it.copy(loading = false) }
         }
     }
 

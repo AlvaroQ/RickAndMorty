@@ -3,14 +3,19 @@
     <string name="error_connectivity">Error de conexión</string>
     <string name="error_server">Error de servidor</string>
     <string name="error_unknown">Error desconocido</string>
-    <string name="gender">Gender is %s</string>
-    <string name="status">Status is %s</string>
-    <string name="species">Species is %s</string>
-    <string name="type">Type is %s</string>
     <string name="query_hint">Search something</string>
     <string name="no_more_item_found">No more item found</string>
-    <string name="title_status">Status</string>
-    <string name="title_gender">Gender</string>
+
+    <string name="status_filter">status</string>
+    <string name="gender_filter">gender</string>
+    <string name="gender">Gender:</string>
+    <string name="status">Status:</string>
+    <string name="species">Species:</string>
+    <string name="type">Type:</string>
+    <string name="url">URL:</string>
+    <string name="created">Created:</string>
+    <string name="location">Location:</string>
+    <string name="episodes">Episodes:</string>
 
     <string-array name="status_list">
         <item>all</item>

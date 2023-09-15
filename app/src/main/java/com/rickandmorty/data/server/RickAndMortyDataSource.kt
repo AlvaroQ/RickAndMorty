@@ -3,8 +3,9 @@ package com.rickandmorty.data.server
 import com.rickandmorty.data.source.CharacterDataSource
 import com.rickandmorty.domain.Character
 import com.rickandmorty.domain.CharacterList
+import javax.inject.Inject
 
-class RickAndMortyDataSource: CharacterDataSource {
+class RickAndMortyDataSource @Inject constructor(): CharacterDataSource {
 
     override suspend fun getCharacters(page: Int, nameFiltered: String?, genderFiltered: String?, statusFiltered: String?): CharacterList {
         return RickAndMortyApi.service

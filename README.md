@@ -1,17 +1,20 @@
 # RickAndMorty
 
-This is an example Android Application that follow up Clean Architecture principles using MVVM pattern with Google architecture components and kotlin. MVP using https://rickandmortyapi.com/
+This is an example Android Application that follow up Clean Architecture principles using MVVM
+pattern with Google architecture components and kotlin. MVP using https://rickandmortyapi.com/
 
 <p align="center">
-<img src="https://github.com/AlvaroQ/RickAndMorty/blob/main/capture/MainScreen.jpg" width="150">
-<img src="https://github.com/AlvaroQ/RickAndMorty/blob/main/capture/DetailScreen.jpg" width="150">
+<img src="https://github.com/AlvaroQ/RickAndMorty/blob/main/capture/DarkMode.jpg" width="250">
+<img src="https://github.com/AlvaroQ/RickAndMorty/blob/main/capture/LightMode.jpg" width="250">
 </p>
 
 - Follow SOLID principles
-- Koin dependency injector
 - MVVM presentation pattern
+- Jetpack Compose
+- Compose Navigation
+- Dagger Hilt dependency injector
 - Google Architecture Components
-- Error handling 
+- Error handling
 - State flow
-- View Binding
 - Multi-filter with paging
+- Dark and light theme
