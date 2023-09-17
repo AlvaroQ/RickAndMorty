@@ -73,7 +73,7 @@ fun DetailScreen(characterId: Int, onUpClick: () -> Unit, vm: DetailViewModel = 
                         .fillMaxSize()
                 ) {
                     character?.let { character ->
-                        fillContent(character)
+                        FillContent(character)
                     }
                 }
             }
@@ -82,7 +82,7 @@ fun DetailScreen(characterId: Int, onUpClick: () -> Unit, vm: DetailViewModel = 
 }
 
 @Composable
-private fun fillContent(character: Character) {
+private fun FillContent(character: Character) {
     val context = LocalContext.current
 
     character.apply {

@@ -72,30 +72,35 @@ fun FilterRow(vm: HomeViewModel = hiltViewModel()) {
         MenuFilter(
             context.getString(R.string.status_filter),
             statusArray,
-            Modifier.weight(1f),
             onClick = {
                 vm.nextPage = 1
                 vm.statusFilter = if (it == statusArray[0]) null else it
                 vm.cleanList()
                 vm.findCharacters()
-            }
+            },
+            Modifier.weight(1f)
         )
         MenuFilter(
             context.getString(R.string.gender_filter),
             genderArray,
-            Modifier.weight(1f),
             onClick = {
                 vm.nextPage = 1
                 vm.genderFilter = if (it == statusArray[0]) null else it
                 vm.cleanList()
                 vm.findCharacters()
-            }
+            },
+            Modifier.weight(1f)
         )
     }
 }
 
 @Composable
-fun MenuFilter(title: String, list: Array<String>, modifier: Modifier, onClick: (String) -> Unit) {
+fun MenuFilter(
+    title: String,
+    list: Array<String>,
+    onClick: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val expanded = remember { mutableStateOf(false) }
     val selectedItem = remember { mutableStateOf(list[0]) }
 

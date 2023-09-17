@@ -30,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.rickandmorty.R
 import com.rickandmorty.common.errorToString
 import com.rickandmorty.domain.Character
+import com.rickandmorty.ui.ComposeMainActivity
 import com.rickandmorty.ui.composables.Thumb
 import com.rickandmorty.ui.theme.RickAndMortyTheme
 import com.rickandmorty.ui.theme.paddingMedium
@@ -40,8 +41,8 @@ import kotlinx.coroutines.delay
 @ExperimentalFoundationApi
 @Composable
 fun MediaList(
-    vm: HomeViewModel = hiltViewModel(),
-    onClick: (Character) -> Unit
+    onClick: (Character) -> Unit,
+    vm: HomeViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val listState = rememberLazyListState()
@@ -95,7 +96,7 @@ fun MediaList(
     }
 
     LaunchedEffect(state) {
-        delay(2000)
+        delay(ComposeMainActivity.DELAY_TO_REFRESH_LIST)
         loadingBlocked = false
     }
 }

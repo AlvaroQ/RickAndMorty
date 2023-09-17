@@ -14,3 +14,7 @@
 .cxx
 local.properties
 .idea/
+*.class
+*.MF
+*.bin
+/buildsrc/build
