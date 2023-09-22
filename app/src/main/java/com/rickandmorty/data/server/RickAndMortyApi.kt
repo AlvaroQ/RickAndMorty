@@ -7,7 +7,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RickAndMortyApi {
-    private const val baseUrl = "https://rickandmortyapi.com/api/"
+    private const val BASE_URL = "https://rickandmortyapi.com/api/"
 
     private val okHttpClient = HttpLoggingInterceptor().run {
         if (BuildConfig.DEBUG) level = HttpLoggingInterceptor.Level.BODY
@@ -15,7 +15,7 @@ object RickAndMortyApi {
     }
 
     val service: RickAndMortyService = Retrofit.Builder()
-        .baseUrl(baseUrl)
+        .baseUrl(BASE_URL)
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .build()

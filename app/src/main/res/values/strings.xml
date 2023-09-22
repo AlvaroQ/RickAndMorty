@@ -17,6 +17,15 @@
     <string name="location">Location:</string>
     <string name="episodes">Episodes:</string>
 
+    <!--    contentDescription-->
+    <string name="share">SHARE</string>
+    <string name="favorite">FAVORITE</string>
+    <string name="close">CLOSE</string>
+    <string name="search">SEARCH</string>
+    <string name="icon">ICON</string>
+    <string name="image">IMAGE</string>
+    <string name="menu">MENU</string>
+
     <string-array name="status_list">
         <item>all</item>
         <item>alive</item>

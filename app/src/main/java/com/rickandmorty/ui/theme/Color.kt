@@ -14,5 +14,6 @@ val CyanDark = Color(0xFF006868)
 
 val Black = Color(0xFF000000)
 val White = Color(0xFFFFFFFF)
+val Red = Color(0xFFFF0000)
 val Transparent = Color(0x0)
 

@@ -86,6 +86,8 @@ dependencies {
     implementation(Libs.AndroidX.Compose.UI.toolingPreview)
     implementation(Libs.AndroidX.Navigation.compose)
     implementation(Libs.Coil.compose)
+    implementation(Libs.AndroidX.Room.runtime)
+    implementation(Libs.AndroidX.Room.ktx)
 
     kapt(Libs.AndroidX.Room.compiler)
     kapt(Libs.Hilt.compiler)

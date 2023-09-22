@@ -101,6 +101,7 @@ fun MenuFilter(
     onClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     val expanded = remember { mutableStateOf(false) }
     val selectedItem = remember { mutableStateOf(list[0]) }
 
@@ -119,7 +120,7 @@ fun MenuFilter(
             Text(selectedItem.value + " " + title)
             Icon(
                 imageVector = Icons.Default.ArrowDropDown,
-                contentDescription = null,
+                contentDescription = context.getString(R.string.menu),
                 tint = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier.size(24.dp)
             )

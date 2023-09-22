@@ -1,6 +1,7 @@
 package com.rickandmorty.ui.screens.detail
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,7 +9,15 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -20,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ShareCompat
 import androidx.core.net.toUri
 import androidx.core.text.buildSpannedString
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,6 +37,7 @@ import coil.compose.AsyncImage
 import com.rickandmorty.R
 import com.rickandmorty.domain.Character
 import com.rickandmorty.ui.composables.ArrowBackIcon
+import com.rickandmorty.ui.theme.Red
 import com.rickandmorty.ui.theme.RickAndMortyTheme
 import com.rickandmorty.ui.theme.descriptionHeight
 import java.text.SimpleDateFormat
@@ -36,6 +47,7 @@ import java.util.Date
 @ExperimentalFoundationApi
 @Composable
 fun DetailScreen(characterId: Int, onUpClick: () -> Unit, vm: DetailViewModel = hiltViewModel()) {
+    val context = LocalContext.current
     LaunchedEffect(true) {
         vm.findCharacter(characterId = characterId)
     }
@@ -48,9 +60,26 @@ fun DetailScreen(characterId: Int, onUpClick: () -> Unit, vm: DetailViewModel = 
             topBar = {
                 TopAppBar(
                     title = { Text(text = character?.name ?: "") },
-                    navigationIcon = { ArrowBackIcon(onUpClick) }
+                    navigationIcon = { ArrowBackIcon(onUpClick) },
+                    actions = {
+                        IconButton(onClick = {
+                            character?.let { character ->
+                                shareCharacter(context, character.name, character.url)
+                            }
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.Share,
+                                contentDescription = context.getString(R.string.share)
+                            )
+                        }
+                    }
                 )
-            }
+            },
+            floatingActionButton = {
+                character?.let { character ->
+                    FloatingBtn(character, vm)
+                }
+            },
         ) { padding ->
             Column(
                 modifier = Modifier
@@ -60,7 +89,7 @@ fun DetailScreen(characterId: Int, onUpClick: () -> Unit, vm: DetailViewModel = 
             ) {
                 AsyncImage(
                     model = character?.image,
-                    contentDescription = null,
+                    contentDescription = context.getString(R.string.image),
                     modifier = Modifier
                         .height(descriptionHeight)
                         .fillMaxSize(),
@@ -82,6 +111,27 @@ fun DetailScreen(characterId: Int, onUpClick: () -> Unit, vm: DetailViewModel = 
 }
 
 @Composable
+private fun FloatingBtn(character: Character, vm: DetailViewModel = hiltViewModel()) {
+    val context = LocalContext.current
+    val isFav = vm.isFav.collectAsState()
+    LaunchedEffect(true) {
+        vm.isFavorite(character = character)
+    }
+
+
+    FloatingActionButton(
+        containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+        onClick = { vm.saveFavorite(isFav.value, character) }
+    ) {
+        Icon(
+            imageVector = if (isFav.value) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+            tint = Red,
+            contentDescription = context.getString(R.string.favorite)
+        )
+    }
+}
+
+@Composable
 private fun FillContent(character: Character) {
     val context = LocalContext.current
 
@@ -95,7 +145,7 @@ private fun FillContent(character: Character) {
             appendLine(context.getString(R.string.created) + " " + parseDateString(created) + "\n")
             appendLine(context.getString(R.string.location) + " " + location.name + "\n")
             appendLine(context.getString(R.string.episodes) + " " + episode.map {
-                it?.toUri()?.path?.split("/")?.last()
+                it.toUri().path?.split("/")?.last()
             })
         }.toString()
         Text(text = text)
@@ -111,4 +161,14 @@ private fun parseDateString(dateString: String): String? {
     val output = SimpleDateFormat(patternOutput)
     val d: Date = sdf.parse(dateString)!!
     return output.format(d)
+}
+
+private fun shareCharacter(context: Context, name: String, description: String) {
+    val intent = ShareCompat
+        .IntentBuilder(context)
+        .setType("text/plain")
+        .setSubject(name)
+        .setText(description)
+        .intent
+    context.startActivity(intent)
 }

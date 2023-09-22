@@ -1,6 +1,7 @@
 package com.rickandmorty.common
 
 import android.content.Context
+import com.rickandmorty.CharactersApp
 import com.rickandmorty.R
 import com.rickandmorty.data.Error
 
@@ -10,3 +11,6 @@ fun Context.errorToString(error: Error) = when (error) {
     is Error.Server -> getString(R.string.error_server) + error.code
     is Error.Unknown -> getString(R.string.error_unknown) + error.message
 }
+
+val Context.app
+    get() = applicationContext as CharactersApp

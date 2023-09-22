@@ -1,9 +1,6 @@
 package com.rickandmorty.usecases
 
-import arrow.core.Either
-import com.rickandmorty.data.Error
 import com.rickandmorty.data.repository.CharacterRepository
-import com.rickandmorty.domain.CharacterList
 import javax.inject.Inject
 
 class GetCharacterUseCase @Inject constructor(private val characterRepository: CharacterRepository) {
@@ -11,11 +8,11 @@ class GetCharacterUseCase @Inject constructor(private val characterRepository: C
         page: Int,
         nameFiltered: String? = null,
         genderFiltered: String? = null,
-        statusFiltered: String? = null): Either<Error, CharacterList> {
-            return characterRepository.getCharacters(
-                page = page,
-                nameFiltered = nameFiltered,
-                genderFiltered = genderFiltered,
-                statusFiltered = statusFiltered)
-    }
+        statusFiltered: String? = null
+    ) = characterRepository.getCharacters(
+        page = page,
+        nameFiltered = nameFiltered,
+        genderFiltered = genderFiltered,
+        statusFiltered = statusFiltered
+    )
 }

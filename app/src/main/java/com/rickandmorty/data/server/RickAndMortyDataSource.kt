@@ -2,7 +2,7 @@ package com.rickandmorty.data.server
 
 import com.rickandmorty.data.source.CharacterDataSource
 import com.rickandmorty.domain.Character
-import com.rickandmorty.domain.CharacterList
+import com.rickandmorty.domain.CharacterResult
 import javax.inject.Inject
 
 class RickAndMortyDataSource @Inject constructor() : CharacterDataSource {
@@ -12,7 +12,7 @@ class RickAndMortyDataSource @Inject constructor() : CharacterDataSource {
         nameFiltered: String?,
         genderFiltered: String?,
         statusFiltered: String?
-    ): CharacterList {
+    ): CharacterResult {
         return RickAndMortyApi.service
             .getCharactersAsync(
                 page = page,

@@ -7,18 +7,24 @@ import com.rickandmorty.data.Error
 import com.rickandmorty.data.source.CharacterDataSource
 import com.rickandmorty.data.toError
 import com.rickandmorty.domain.Character
-import com.rickandmorty.domain.CharacterList
+import com.rickandmorty.domain.CharacterResult
 import javax.inject.Inject
 
 class CharacterRepository @Inject constructor(private val characterDataSource: CharacterDataSource) {
 
-    suspend fun getCharacters(page: Int, nameFiltered: String?, statusFiltered: String?, genderFiltered: String?): Either<Error, CharacterList> {
+    suspend fun getCharacters(
+        page: Int,
+        nameFiltered: String?,
+        statusFiltered: String?,
+        genderFiltered: String?
+    ): Either<Error, CharacterResult> {
         return try {
             characterDataSource.getCharacters(
                 page = page,
                 nameFiltered = nameFiltered,
                 genderFiltered = genderFiltered,
-                statusFiltered = statusFiltered).right()
+                statusFiltered = statusFiltered
+            ).right()
         } catch (e: Exception) {
             e.toError().left()
         }

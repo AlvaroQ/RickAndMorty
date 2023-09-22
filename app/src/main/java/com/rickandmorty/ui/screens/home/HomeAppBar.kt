@@ -116,9 +116,15 @@ fun MainAppBar(vm: HomeViewModel = hiltViewModel()) {
 
                     isSearchExpanded.value = !isSearchExpanded.value
                 }) {
+
+                val contentString = if (isSearchExpanded.value)
+                    context.getString(R.string.close)
+                else
+                    context.getString(R.string.search)
+
                 Icon(
                     imageVector = if (isSearchExpanded.value) Icons.Default.Close else Icons.Default.Search,
-                    contentDescription = if (isSearchExpanded.value) "Close" else "Search"
+                    contentDescription = contentString
                 )
             }
         }

@@ -17,4 +17,6 @@ pattern with Google architecture components and kotlin. MVP using https://rickan
 - Error handling
 - State flow
 - Multi-filter with paging
+- Room store favorite on data base
 - Dark and light theme
+- Detekt code analysis tool
