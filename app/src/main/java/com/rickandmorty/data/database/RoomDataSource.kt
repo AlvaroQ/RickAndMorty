@@ -4,6 +4,8 @@ import com.rickandmorty.data.source.LocalDataSource
 import com.rickandmorty.data.toDomainCharacter
 import com.rickandmorty.data.toRoomCharacter
 import com.rickandmorty.domain.Character
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class RoomDataSource @Inject constructor(db: FavoriteDataBase) : LocalDataSource {
@@ -12,9 +14,10 @@ class RoomDataSource @Inject constructor(db: FavoriteDataBase) : LocalDataSource
         return favoriteDao.favoriteCount() <= 0
     }
 
-    override suspend fun getAllFavoriteCharacters(): List<Character> {
-        return favoriteDao.getAllFavoriteCharacters().map { it.toDomainCharacter() }
-    }
+    override fun getAllFavoriteCharacters(): Flow<List<Character>> =
+        favoriteDao.getAllFavoriteCharacters().map { characterListDB ->
+            characterListDB.map { it.toDomainCharacter() }
+        }
 
     override suspend fun isFavoriteCharacters(character: Character): Boolean {
         return favoriteDao.isFavoriteCharacters(character.id) != null

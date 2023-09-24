@@ -10,7 +10,7 @@ object Config {
 }
 
 object Gradle {
-    private const val gradleVersion = "8.1.1"
+    private const val gradleVersion = "8.1.0"
     private const val kotlinVersion = "1.7.21"
     const val androidPlugin = "com.android.tools.build:gradle:${gradleVersion}"
     const val versionsPlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"

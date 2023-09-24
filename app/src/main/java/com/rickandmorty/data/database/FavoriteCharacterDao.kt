@@ -5,22 +5,24 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
+import com.rickandmorty.domain.Character as CharacterDomain
 
 @Dao
 interface FavoriteCharacterDao {
 
     @Query("SELECT COUNT(id) FROM Favorite")
-    fun favoriteCount(): Int
+    suspend fun favoriteCount(): Int
 
     @Query("SELECT * FROM Favorite")
-    fun getAllFavoriteCharacters(): List<Character>
+    fun getAllFavoriteCharacters(): Flow<List<Character>>
 
     @Query("SELECT * FROM Favorite WHERE id = :idCharacter LIMIT 1")
     fun isFavoriteCharacters(idCharacter: Int): Character?
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertFavoriteCharacter(favoriteCharacter: Character)
+    suspend fun insertFavoriteCharacter(favoriteCharacter: Character)
 
     @Delete
-    fun deleteFavoriteCharacter(favoriteCharacter: Character)
+    suspend fun deleteFavoriteCharacter(favoriteCharacter: Character)
 }

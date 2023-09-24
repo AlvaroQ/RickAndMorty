@@ -4,11 +4,10 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rickandmorty.data.Error
+import com.rickandmorty.data.repository.CharacterRepository
+import com.rickandmorty.data.repository.FavoriteRepository
 import com.rickandmorty.domain.Character
-import com.rickandmorty.usecases.FavoriteCharactersUseCase
-import com.rickandmorty.usecases.GetCharacterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,8 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getCharacterUseCase: GetCharacterUseCase,
-    private val favoriteCharactersUseCase: FavoriteCharactersUseCase
+    private val favoriteRepository: FavoriteRepository,
+    private val characterRepository: CharacterRepository
 ) : ViewModel() {
     var nameFilter: String? = null
     var genderFilter: String? = null
@@ -36,7 +35,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun findCharacters() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             _state.update { it.copy(loading = true) }
             requestCharacters()
             _state.update { it.copy(loading = false) }
@@ -56,7 +55,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private suspend fun requestCharacters() {
-        val characterListResponse = getCharacterUseCase(
+        val characterListResponse = characterRepository.getCharacters(
             page = nextPage,
             nameFiltered = nameFilter,
             genderFiltered = genderFilter,
@@ -84,23 +83,21 @@ class HomeViewModel @Inject constructor(
             }
         })
 
-        reloadCharacterListWithFavorites()
+        characterListWithFavorites()
     }
 
     fun saveFavorite(isFavorite: Boolean, character: Character) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             if (isFavorite) {
-                favoriteCharactersUseCase.deleteFavoriteCharacter(character)
+                favoriteRepository.deleteFavoriteCharacter(character)
             } else {
-                favoriteCharactersUseCase.insertFavoriteCharacter(character)
+                favoriteRepository.insertFavoriteCharacter(character)
             }
-            reloadCharacterListWithFavorites()
         }
     }
 
-    fun reloadCharacterListWithFavorites() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val favoritesList: List<Character> = favoriteCharactersUseCase.favoriteCharacters()
+    private suspend fun characterListWithFavorites() {
+        favoriteRepository.getAllFavoriteCharacters().collect { favoritesList ->
             val finalList = (_state.value.characterList ?: emptyList()).map { serverCharacter ->
                 if (favoritesList.find { it.id == serverCharacter.id } != null) {
                     serverCharacter.copy(favorite = true)
@@ -116,6 +113,7 @@ class HomeViewModel @Inject constructor(
     data class UiState(
         val loading: Boolean = false,
         val characterList: List<Character>? = null,
+        val favCharacterList: List<Character>? = null,
         val noMoreItemFound: Boolean = false,
         val error: Error? = null
     )
