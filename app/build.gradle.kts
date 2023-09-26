@@ -4,7 +4,7 @@ import com.rickandmorty.buildsrc.Libs
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("org.jetbrains.kotlin.kapt")
+    id("com.google.devtools.ksp")
     id("dagger.hilt.android.plugin")
     id("io.gitlab.arturbosch.detekt")
 }
@@ -89,6 +89,6 @@ dependencies {
     implementation(Libs.AndroidX.Room.runtime)
     implementation(Libs.AndroidX.Room.ktx)
 
-    kapt(Libs.AndroidX.Room.compiler)
-    kapt(Libs.Hilt.compiler)
+    ksp(Libs.AndroidX.Room.compiler)
+    ksp(Libs.Hilt.compiler)
 }
