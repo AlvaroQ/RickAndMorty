@@ -5,10 +5,13 @@ import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -18,6 +21,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rickandmorty.R
 import com.rickandmorty.common.errorToString
@@ -46,12 +51,25 @@ fun MediaList(
         state = listState,
         contentPadding = PaddingValues(paddingXsmall)
     ) {
-        items(characterList) {
-            MediaListItem(
-                mediaItem = it,
-                onClick = { onClick(it) },
-                modifier = Modifier.padding(paddingXsmall)
-            )
+        if (characterList.isEmpty()) {
+            item {
+                Text(
+                    text = context.getString(R.string.tab_character_no_items),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    color = MaterialTheme.colorScheme.secondary,
+                    fontSize = 20.sp
+                )
+            }
+        } else {
+            items(characterList) {
+                MediaListItem(
+                    mediaItem = it,
+                    onClick = { onClick(it) },
+                    modifier = Modifier.padding(paddingXsmall)
+                )
+            }
         }
     }
 
@@ -96,6 +114,7 @@ fun MediaListFavorite(
     onClick: (Character) -> Unit,
     vm: HomeViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val listState = rememberLazyListState()
     val favList by vm.favState.collectAsState()
 
@@ -104,12 +123,25 @@ fun MediaListFavorite(
         state = listState,
         contentPadding = PaddingValues(paddingXsmall)
     ) {
-        items(favList) {
-            MediaListItem(
-                mediaItem = it,
-                onClick = { onClick(it) },
-                modifier = Modifier.padding(paddingXsmall)
-            )
+        if (favList.isEmpty()) {
+            item {
+                Text(
+                    text = context.getString(R.string.tab_fav_no_items),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    color = MaterialTheme.colorScheme.secondary,
+                    fontSize = 20.sp
+                )
+            }
+        } else {
+            items(favList) {
+                MediaListItem(
+                    mediaItem = it,
+                    onClick = { onClick(it) },
+                    modifier = Modifier.padding(paddingXsmall)
+                )
+            }
         }
     }
 }
