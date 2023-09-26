@@ -24,7 +24,7 @@ class HomeViewModel @Inject constructor(
     var genderFilter: String? = null
     var statusFilter: String? = null
 
-    private var totalPages: Int = 1
+    private var totalPages: Int = 2
     var nextPage: Int = 1
 
     private val _state = MutableStateFlow(UiState())

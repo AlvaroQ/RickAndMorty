@@ -1,10 +1,8 @@
 package com.rickandmorty.ui.screens.home
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,7 +27,6 @@ fun FilterRow(vm: HomeViewModel = hiltViewModel()) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
-            .background(MaterialTheme.colorScheme.primary)
             .fillMaxWidth()
     ) {
         FilterMenu(

@@ -22,6 +22,7 @@ import com.rickandmorty.R
 import com.rickandmorty.ui.theme.Transparent
 import kotlinx.coroutines.launch
 
+@ExperimentalFoundationApi
 @Composable
 fun TabbedView(onNavigate: (Int) -> Unit) {
     val context = LocalContext.current

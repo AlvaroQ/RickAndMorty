@@ -19,8 +19,8 @@
 
     <string name="tab_character">Characters</string>
     <string name="tab_favorite">Favorites</string>
-    <string name="tab_fav_no_items">There are not favorite items to show</string>
-    <string name="tab_character_no_items">There are not favorite items to show</string>
+    <string name="tab_fav_no_items">There are not favorites to show</string>
+    <string name="tab_character_no_items">There are not characters to show</string>
 
     <!--    contentDescription-->
     <string name="share">SHARE</string>
