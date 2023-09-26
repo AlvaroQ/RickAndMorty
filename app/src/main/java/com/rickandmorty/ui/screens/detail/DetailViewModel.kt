@@ -56,7 +56,7 @@ class DetailViewModel @Inject constructor(
             if (isFavorite) {
                 favoriteCharactersUseCase.deleteFavoriteCharacter(character)
             } else {
-                favoriteCharactersUseCase.insertFavoriteCharacter(character)
+                favoriteCharactersUseCase.insertFavoriteCharacter(character.copy(favorite = true))
             }
             isFavorite(character)
         }

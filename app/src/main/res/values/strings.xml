@@ -17,6 +17,9 @@
     <string name="location">Location:</string>
     <string name="episodes">Episodes:</string>
 
+    <string name="tab_character">Characters</string>
+    <string name="tab_favorite">Favorites</string>
+
     <!--    contentDescription-->
     <string name="share">SHARE</string>
     <string name="favorite">FAVORITE</string>

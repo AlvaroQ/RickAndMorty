@@ -30,6 +30,9 @@ class HomeViewModel @Inject constructor(
     private val _state = MutableStateFlow(UiState())
     val state: StateFlow<UiState> = _state.asStateFlow()
 
+    private val _favState = MutableStateFlow<List<Character>>(emptyList())
+    val favState: StateFlow<List<Character>> = _favState.asStateFlow()
+
     init {
         findCharacters()
     }
@@ -91,13 +94,15 @@ class HomeViewModel @Inject constructor(
             if (isFavorite) {
                 favoriteRepository.deleteFavoriteCharacter(character)
             } else {
-                favoriteRepository.insertFavoriteCharacter(character)
+                favoriteRepository.insertFavoriteCharacter(character.copy(favorite = true))
             }
         }
     }
 
     private suspend fun characterListWithFavorites() {
         favoriteRepository.getAllFavoriteCharacters().collect { favoritesList ->
+            _favState.value = favoritesList
+
             val finalList = (_state.value.characterList ?: emptyList()).map { serverCharacter ->
                 if (favoritesList.find { it.id == serverCharacter.id } != null) {
                     serverCharacter.copy(favorite = true)
@@ -106,14 +111,13 @@ class HomeViewModel @Inject constructor(
                 }
             }
 
-            _state.value = UiState(characterList = finalList)
+            _state.update { UiState(characterList = finalList) }
         }
     }
 
     data class UiState(
         val loading: Boolean = false,
         val characterList: List<Character>? = null,
-        val favCharacterList: List<Character>? = null,
         val noMoreItemFound: Boolean = false,
         val error: Error? = null
     )
