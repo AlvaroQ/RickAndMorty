@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rickandmorty.data.Error
 import com.rickandmorty.domain.Character
+import com.rickandmorty.usecases.CharacterUseCase
 import com.rickandmorty.usecases.FavoriteCharactersUseCase
-import com.rickandmorty.usecases.GetCharacterByIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailViewModel @Inject constructor(
-    private val getCharacterByIdUseCase: GetCharacterByIdUseCase,
+    private val characterUseCase: CharacterUseCase,
     private val favoriteCharactersUseCase: FavoriteCharactersUseCase
 ) : ViewModel() {
 
@@ -31,7 +31,7 @@ class DetailViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(loading = true) }
 
-            val characterResponse = getCharacterByIdUseCase(characterId)
+            val characterResponse = characterUseCase.getCharacterById(characterId)
             characterResponse.fold(
                 { exception ->
                     _state.update { it.copy(error = exception) }

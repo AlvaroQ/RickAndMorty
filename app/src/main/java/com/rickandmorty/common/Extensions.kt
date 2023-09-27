@@ -12,5 +12,8 @@ fun Context.errorToString(error: Error) = when (error) {
     is Error.Unknown -> getString(R.string.error_unknown) + error.message
 }
 
+fun Context.listOfTabs() =
+    listOf(getString(R.string.tab_character), getString(R.string.tab_favorite))
+
 val Context.app
     get() = applicationContext as CharactersApp

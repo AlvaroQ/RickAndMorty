@@ -3,8 +3,11 @@ package com.rickandmorty.usecases
 import com.rickandmorty.data.repository.CharacterRepository
 import javax.inject.Inject
 
-class GetCharacterUseCase @Inject constructor(private val characterRepository: CharacterRepository) {
-    suspend operator fun invoke(
+class CharacterUseCase @Inject constructor(private val characterRepository: CharacterRepository) {
+
+    suspend fun getCharacterById(id: Int) = characterRepository.getCharacterById(id)
+
+    suspend fun getCharacters(
         page: Int,
         nameFiltered: String? = null,
         genderFiltered: String? = null,

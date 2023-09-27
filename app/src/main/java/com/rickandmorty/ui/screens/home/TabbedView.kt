@@ -18,22 +18,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import com.rickandmorty.R
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.rickandmorty.common.listOfTabs
 import com.rickandmorty.ui.theme.Transparent
 import kotlinx.coroutines.launch
 
 @ExperimentalFoundationApi
 @Composable
-fun TabbedView(onNavigate: (Int) -> Unit) {
+fun TabbedView(onNavigate: (Int) -> Unit, vm: HomeViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val pagerState = rememberPagerState(pageCount = { 2 })
-    val tabs = listOf(
-        context.getString(R.string.tab_character),
-        context.getString(R.string.tab_favorite)
-    )
 
     Column(modifier = Modifier.fillMaxSize()) {
-        TabbedViewPager(tabs = tabs, pagerState = pagerState) { selectedTabIndex ->
+        TabbedViewPager(tabs = context.listOfTabs(), pagerState = pagerState) { selectedTabIndex ->
+            vm.selectedTabIndex = selectedTabIndex
             when (selectedTabIndex) {
                 0 -> MediaList(onClick = { onNavigate(it.id) })
                 1 -> MediaListFavorite(onClick = { onNavigate(it.id) })

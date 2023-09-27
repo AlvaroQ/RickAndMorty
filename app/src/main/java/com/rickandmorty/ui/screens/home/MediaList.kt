@@ -16,9 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -27,9 +24,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.rickandmorty.R
 import com.rickandmorty.common.errorToString
 import com.rickandmorty.domain.Character
-import com.rickandmorty.ui.ComposeMainActivity
 import com.rickandmorty.ui.theme.paddingXsmall
-import kotlinx.coroutines.delay
 
 @SuppressLint("FrequentlyChangedStateReadInComposition")
 @ExperimentalFoundationApi
@@ -40,11 +35,11 @@ fun MediaList(
 ) {
     val context = LocalContext.current
     val listState = rememberLazyListState()
-    var loadingBlocked by remember { mutableStateOf(false) }
     val state by vm.state.collectAsState()
     val characterList = state.characterList ?: emptyList()
     val error = state.error
     val noMoreItemFound = state.noMoreItemFound
+    val loadingBlocked = state.loading
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -78,7 +73,6 @@ fun MediaList(
         val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
 
         if (lastVisibleItemIndex == totalItems - 1 && !loadingBlocked) {
-            loadingBlocked = true
             vm.updateList()
         }
     }
@@ -101,11 +95,6 @@ fun MediaList(
                 Toast.LENGTH_LONG
             ).show()
         }
-    }
-
-    LaunchedEffect(state) {
-        delay(ComposeMainActivity.DELAY_TO_REFRESH_LIST)
-        loadingBlocked = false
     }
 }
 

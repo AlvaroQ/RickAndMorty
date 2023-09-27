@@ -4,10 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -19,7 +15,6 @@ import com.rickandmorty.R
 @Composable
 fun FilterRow(vm: HomeViewModel = hiltViewModel()) {
     val context = LocalContext.current
-    var filterClicked by remember { mutableStateOf<Filter?>(null) }
     val statusArray = stringArrayResource(R.array.status_list)
     val genderArray = stringArrayResource(R.array.gender_list)
 
@@ -34,7 +29,9 @@ fun FilterRow(vm: HomeViewModel = hiltViewModel()) {
             statusArray,
             onClick = {
                 vm.statusFilter = if (it == statusArray[0]) null else it
-                filterClicked = Filter.STATUS
+                vm.nextPage = 1
+                vm.cleanList()
+                vm.findCharacters()
             },
             Modifier.weight(1f)
         )
@@ -43,22 +40,11 @@ fun FilterRow(vm: HomeViewModel = hiltViewModel()) {
             genderArray,
             onClick = {
                 vm.genderFilter = if (it == statusArray[0]) null else it
-                filterClicked = Filter.GENDER
+                vm.nextPage = 1
+                vm.cleanList()
+                vm.findCharacters()
             },
             Modifier.weight(1f)
         )
     }
-
-    filterClicked?.let { FilterMenuClicked(vm) }
-}
-
-@Composable
-fun FilterMenuClicked(vm: HomeViewModel = hiltViewModel()) {
-    vm.nextPage = 1
-    vm.cleanList()
-    vm.findCharacters()
-}
-
-enum class Filter {
-    STATUS, GENDER
 }
