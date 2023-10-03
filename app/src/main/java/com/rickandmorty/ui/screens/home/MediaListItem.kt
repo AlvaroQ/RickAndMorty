@@ -85,7 +85,7 @@ fun MediaListItem(
                         .width(cellWidth)
                 ) {
                     IconButton(
-                        onClick = { vm.saveFavorite(mediaItem.favorite, mediaItem) },
+                        onClick = { vm.saveFavorite(!mediaItem.favorite, mediaItem) },
                         modifier = Modifier
                             .height(favWidth)
                             .width(favWidth)

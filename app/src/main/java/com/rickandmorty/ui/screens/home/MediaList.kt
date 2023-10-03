@@ -1,13 +1,13 @@
 package com.rickandmorty.ui.screens.home
 
 import android.annotation.SuppressLint
-import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListLayoutInfo
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
@@ -22,100 +22,58 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.rickandmorty.R
-import com.rickandmorty.common.errorToString
+import com.rickandmorty.common.TAB_CHARACTERS
 import com.rickandmorty.domain.Character
+import com.rickandmorty.ui.composables.ShowError
+import com.rickandmorty.ui.composables.ShowNoMoreItemFound
 import com.rickandmorty.ui.theme.paddingXsmall
+
 
 @SuppressLint("FrequentlyChangedStateReadInComposition")
 @ExperimentalFoundationApi
 @Composable
 fun MediaList(
+    selectedTabIndex: Int,
     onClick: (Character) -> Unit,
     vm: HomeViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
     val listState = rememberLazyListState()
     val state by vm.state.collectAsState()
+    val favList by vm.favState.collectAsState()
     val characterList = state.characterList ?: emptyList()
-    val error = state.error
-    val noMoreItemFound = state.noMoreItemFound
-    val loadingBlocked = state.loading
 
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        state = listState,
-        contentPadding = PaddingValues(paddingXsmall)
-    ) {
-        if (characterList.isEmpty()) {
-            item {
-                Text(
-                    text = context.getString(R.string.tab_character_no_items),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    color = MaterialTheme.colorScheme.secondary,
-                    fontSize = 20.sp
-                )
-            }
-        } else {
-            items(characterList) {
-                MediaListItem(
-                    mediaItem = it,
-                    onClick = { onClick(it) },
-                    modifier = Modifier.padding(paddingXsmall)
-                )
-            }
-        }
+    if (selectedTabIndex == TAB_CHARACTERS) {
+        LoadList(onClick, listState, characterList, R.string.tab_character_no_items)
+        LoadMoreItem(state.loading, listState.layoutInfo)
+        ShowNoMoreItemFound(state.noMoreItemFound)
+    } else {
+        LoadList(onClick, listState, favList, R.string.tab_fav_no_items)
     }
 
-    LaunchedEffect(listState.layoutInfo) {
-        val totalItems = listState.layoutInfo.totalItemsCount
-        val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
-
-        if (lastVisibleItemIndex == totalItems - 1 && !loadingBlocked) {
-            vm.updateList()
-        }
-    }
-
-    LaunchedEffect(error) {
-        error?.let {
-            Toast.makeText(
-                context,
-                context.errorToString(it),
-                Toast.LENGTH_LONG
-            ).show()
-        }
-    }
-
-    LaunchedEffect(noMoreItemFound) {
-        if (noMoreItemFound) {
-            Toast.makeText(
-                context,
-                context.getString(R.string.no_more_item_found),
-                Toast.LENGTH_LONG
-            ).show()
-        }
+    ShowError(state.error)
+    LaunchedEffect(favList) {
+        vm.reloadListWithFav()
     }
 }
 
 @Composable
-fun MediaListFavorite(
+fun LoadList(
     onClick: (Character) -> Unit,
-    vm: HomeViewModel = hiltViewModel()
+    listState: LazyListState,
+    list: List<Character>,
+    resIdNoItemsFound: Int
 ) {
     val context = LocalContext.current
-    val listState = rememberLazyListState()
-    val favList by vm.favState.collectAsState()
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         state = listState,
         contentPadding = PaddingValues(paddingXsmall)
     ) {
-        if (favList.isEmpty()) {
+        if (list.isEmpty()) {
             item {
                 Text(
-                    text = context.getString(R.string.tab_fav_no_items),
+                    text = context.getString(resIdNoItemsFound),
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(16.dp),
@@ -124,7 +82,7 @@ fun MediaListFavorite(
                 )
             }
         } else {
-            items(favList) {
+            items(list) {
                 MediaListItem(
                     mediaItem = it,
                     onClick = { onClick(it) },
@@ -134,3 +92,20 @@ fun MediaListFavorite(
         }
     }
 }
+
+@Composable
+fun LoadMoreItem(
+    isLoading: Boolean,
+    layoutInfo: LazyListLayoutInfo,
+    vm: HomeViewModel = hiltViewModel()
+) {
+    LaunchedEffect(layoutInfo) {
+        val totalItems = layoutInfo.totalItemsCount
+        val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+
+        if (lastVisibleItemIndex == totalItems - 1 && !isLoading) {
+            vm.updateList()
+        }
+    }
+}
+

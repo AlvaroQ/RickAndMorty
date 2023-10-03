@@ -10,17 +10,24 @@ import javax.inject.Inject
 
 class RoomDataSource @Inject constructor(db: FavoriteDataBase) : LocalDataSource {
     private val favoriteDao = db.favoriteCharacterDao()
+
     override suspend fun isEmpty(): Boolean {
         return favoriteDao.favoriteCount() <= 0
     }
 
-    override fun getAllFavoriteCharacters(): Flow<List<Character>> =
-        favoriteDao.getAllFavoriteCharacters().map { characterListDB ->
+    override fun allFavoritesFlow(): Flow<List<Character>> =
+        favoriteDao.favoriteListFlow().map { characterListDB ->
             characterListDB.map { it.toDomainCharacter() }
         }
 
-    override suspend fun isFavoriteCharacters(character: Character): Boolean {
-        return favoriteDao.isFavoriteCharacters(character.id) != null
+    override suspend fun getAllFavoriteCharacters(): List<Character> {
+        return favoriteDao.favoriteCharactersList().map { characterListDB ->
+            characterListDB.toDomainCharacter()
+        }
+    }
+
+    override suspend fun isFavoriteCharacterById(id: Int): Boolean {
+        return favoriteDao.isFavoriteCharacters(id) != null
     }
 
     override suspend fun insertFavoriteCharacter(character: Character) {

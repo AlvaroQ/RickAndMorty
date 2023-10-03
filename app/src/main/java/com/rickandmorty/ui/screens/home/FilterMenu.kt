@@ -16,8 +16,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -27,14 +29,15 @@ import com.rickandmorty.ui.theme.paddingSmall
 
 @Composable
 fun FilterMenu(
-    title: String,
+    item: String,
+    section: String,
     list: Array<String>,
     onClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val expanded = remember { mutableStateOf(false) }
-    val selectedItem = remember { mutableStateOf(list[0]) }
+    var expanded by remember { mutableStateOf(false) }
+    var selectedItem by remember { mutableStateOf(item) }
 
     Column(modifier = modifier) {
         Button(
@@ -46,9 +49,9 @@ fun FilterMenu(
             modifier = Modifier
                 .padding(start = paddingSmall, end = paddingSmall)
                 .fillMaxWidth(),
-            onClick = { expanded.value = true }
+            onClick = { expanded = true }
         ) {
-            Text(selectedItem.value + " " + title)
+            Text("$selectedItem $section")
             Icon(
                 imageVector = Icons.Default.ArrowDropDown,
                 contentDescription = context.getString(R.string.menu),
@@ -58,8 +61,8 @@ fun FilterMenu(
         }
 
         DropdownMenu(
-            expanded = expanded.value,
-            onDismissRequest = { expanded.value = false },
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
             modifier = Modifier
                 .width(200.dp)
                 .padding(16.dp)
@@ -68,8 +71,8 @@ fun FilterMenu(
                 DropdownMenuItem(
                     text = { Text(item) },
                     onClick = {
-                        selectedItem.value = item
-                        expanded.value = false
+                        selectedItem = item
+                        expanded = false
                         onClick(item)
                     })
             }

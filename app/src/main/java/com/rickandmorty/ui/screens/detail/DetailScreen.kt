@@ -1,7 +1,6 @@
 package com.rickandmorty.ui.screens.detail
 
 import android.annotation.SuppressLint
-import android.content.Context
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,14 +28,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.core.app.ShareCompat
 import androidx.core.net.toUri
 import androidx.core.text.buildSpannedString
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rickandmorty.R
+import com.rickandmorty.common.shareCharacter
 import com.rickandmorty.domain.Character
 import com.rickandmorty.ui.composables.ArrowBackIcon
+import com.rickandmorty.ui.composables.CenteredCircularProgressIndicator
+import com.rickandmorty.ui.composables.ShowError
 import com.rickandmorty.ui.theme.Red
 import com.rickandmorty.ui.theme.RickAndMortyTheme
 import com.rickandmorty.ui.theme.descriptionHeight
@@ -48,12 +49,14 @@ import java.util.Date
 @Composable
 fun DetailScreen(characterId: Int, onUpClick: () -> Unit, vm: DetailViewModel = hiltViewModel()) {
     val context = LocalContext.current
-    LaunchedEffect(true) {
-        vm.findCharacter(characterId = characterId)
-    }
     val state by vm.state.collectAsState()
     val character = state.character
     val scrollState = rememberScrollState()
+    val error = state.error
+
+    LaunchedEffect(true) {
+        vm.findCharacter(characterId = characterId)
+    }
 
     RickAndMortyTheme {
         Scaffold(
@@ -64,7 +67,7 @@ fun DetailScreen(characterId: Int, onUpClick: () -> Unit, vm: DetailViewModel = 
                     actions = {
                         IconButton(onClick = {
                             character?.let { character ->
-                                shareCharacter(context, character.name, character.url)
+                                context.shareCharacter(character.name, character.url)
                             }
                         }) {
                             Icon(
@@ -107,24 +110,21 @@ fun DetailScreen(characterId: Int, onUpClick: () -> Unit, vm: DetailViewModel = 
                 }
             }
         }
+        CenteredCircularProgressIndicator(state.loading)
     }
+    ShowError(error)
 }
 
 @Composable
 private fun FloatingBtn(character: Character, vm: DetailViewModel = hiltViewModel()) {
     val context = LocalContext.current
-    val isFav = vm.isFav.collectAsState()
-    LaunchedEffect(true) {
-        vm.isFavorite(character = character)
-    }
-
 
     FloatingActionButton(
         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-        onClick = { vm.saveFavorite(isFav.value, character) }
+        onClick = { vm.saveFavorite(!character.favorite, character) }
     ) {
         Icon(
-            imageVector = if (isFav.value) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+            imageVector = if (character.favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
             tint = Red,
             contentDescription = context.getString(R.string.favorite)
         )
@@ -163,12 +163,3 @@ private fun parseDateString(dateString: String): String? {
     return output.format(d)
 }
 
-private fun shareCharacter(context: Context, name: String, description: String) {
-    val intent = ShareCompat
-        .IntentBuilder(context)
-        .setType("text/plain")
-        .setSubject(name)
-        .setText(description)
-        .intent
-    context.startActivity(intent)
-}

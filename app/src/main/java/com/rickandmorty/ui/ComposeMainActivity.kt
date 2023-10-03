@@ -17,8 +17,4 @@ class ComposeMainActivity : ComponentActivity() {
             }
         }
     }
-
-    companion object {
-        const val DELAY_TO_REFRESH_LIST = 2000L
-    }
 }

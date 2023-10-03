@@ -3,11 +3,14 @@ package com.rickandmorty.ui.screens.home
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.rickandmorty.common.TAB_CHARACTERS
 import com.rickandmorty.data.Error
 import com.rickandmorty.domain.Character
-import com.rickandmorty.usecases.CharacterUseCase
-import com.rickandmorty.usecases.FavoriteCharactersUseCase
+import com.rickandmorty.usecases.AllFavoriteCharactersFlowUseCase
+import com.rickandmorty.usecases.GetAllCharacterUseCase
+import com.rickandmorty.usecases.UpdateFavoriteCharacterUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,15 +18,18 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+const val DELAY_TO_REFRESH_LIST = 10L
+
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val favoriteCharactersUseCase: FavoriteCharactersUseCase,
-    private val characterUseCase: CharacterUseCase
+    private val allFavoriteCharactersFlowUseCase: AllFavoriteCharactersFlowUseCase,
+    private val updateFavoriteUseCase: UpdateFavoriteCharacterUseCase,
+    private val getAllCharacterUseCase: GetAllCharacterUseCase
 ) : ViewModel() {
     var nameFilter: String? = null
     var genderFilter: String? = null
     var statusFilter: String? = null
-    var selectedTabIndex: Int = 0
+    var selectedTabIndex: Int = TAB_CHARACTERS
 
     private var totalPages: Int = 1
     var nextPage: Int = 1
@@ -36,22 +42,32 @@ class HomeViewModel @Inject constructor(
 
     init {
         findCharacters()
+
+        viewModelScope.launch {
+            allFavoriteCharactersFlowUseCase().collect { favoritesList ->
+                _favState.value = favoriteListFiltered(favoritesList)
+            }
+        }
+    }
+
+    fun reloadListWithFav() {
+        val resultList = _state.value.characterList?.map { character ->
+            if (_favState.value.find { it.id == character.id } != null) {
+                character.copy(favorite = true)
+            } else {
+                character.copy(favorite = false)
+            }
+        }
+        _state.update { it.copy(characterList = resultList) }
     }
 
     fun findCharacters() {
-        if (selectedTabIndex == 0) {
+        if (selectedTabIndex == TAB_CHARACTERS) {
             // Server characters
             viewModelScope.launch {
                 _state.update { it.copy(loading = true) }
                 requestCharacters()
-                _state.update { it.copy(loading = false) }
-            }
-        } else {
-            viewModelScope.launch {
-                _state.update { it.copy(loading = true) }
-                favoriteCharactersUseCase.favoriteCharacters().collect { favoritesList ->
-                    _favState.value = favoriteListFiltered(favoritesList)
-                }
+                delay(DELAY_TO_REFRESH_LIST)
                 _state.update { it.copy(loading = false) }
             }
         }
@@ -84,7 +100,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private suspend fun requestCharacters() {
-        val characterListResponse = characterUseCase.getCharacters(
+        val characterListResponse = getAllCharacterUseCase(
             page = nextPage,
             nameFiltered = nameFilter,
             genderFiltered = genderFilter,
@@ -111,33 +127,21 @@ class HomeViewModel @Inject constructor(
                 _state.update { it.copy(noMoreItemFound = true) }
             }
         })
-
-        characterListWithFavorites()
     }
 
     fun saveFavorite(isFavorite: Boolean, character: Character) {
         viewModelScope.launch {
-            if (isFavorite) {
-                favoriteCharactersUseCase.deleteFavoriteCharacter(character)
-            } else {
-                favoriteCharactersUseCase.insertFavoriteCharacter(character.copy(favorite = true))
-            }
-        }
-    }
+            _state.update { it.copy(loading = true) }
+            updateFavoriteUseCase(isFavorite, character)
 
-    private suspend fun characterListWithFavorites() {
-        favoriteCharactersUseCase.favoriteCharacters().collect { favoritesList ->
-            _favState.value = favoritesList
+//            val characterList = _state.value.characterList?.map {
+//                if (character.id == it.id) it.copy(favorite = isFavorite)
+//                else it
+//            }
 
-            val finalList = (_state.value.characterList ?: emptyList()).map { serverCharacter ->
-                if (favoritesList.find { it.id == serverCharacter.id } != null) {
-                    serverCharacter.copy(favorite = true)
-                } else {
-                    serverCharacter.copy(favorite = false)
-                }
-            }
-
-            _state.update { UiState(characterList = finalList) }
+//            _state.update { UiState(characterList = characterList) }
+//            _favState.value = favoriteListFiltered(getAllFavoritesUseCase())
+            _state.update { it.copy(loading = false) }
         }
     }
 

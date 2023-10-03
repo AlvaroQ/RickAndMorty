@@ -15,8 +15,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -42,29 +44,29 @@ fun MainAppBar(vm: HomeViewModel = hiltViewModel()) {
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
 
-    val title: String = stringResource(R.string.app_name)
-    val searchText = remember { mutableStateOf(title) }
-    val isSearchExpanded = remember { mutableStateOf(false) }
+    val title: String = vm.nameFilter ?: stringResource(R.string.app_name)
+    var searchText by remember { mutableStateOf(title) }
+    var isSearchExpanded by remember { mutableStateOf(false) }
 
     TopAppBar(
         title = {
             BasicTextField(
-                value = searchText.value,
+                value = searchText,
                 onValueChange = { newText ->
-                    searchText.value = newText
+                    searchText = newText
                 },
                 keyboardOptions = KeyboardOptions(
                     imeAction = ImeAction.Search
                 ),
                 keyboardActions = KeyboardActions(
                     onSearch = {
-                        isSearchExpanded.value = !isSearchExpanded.value
+                        isSearchExpanded = !isSearchExpanded
 
                         keyboardController?.hide()
                         focusManager.clearFocus()
 
                         vm.nextPage = 1
-                        vm.nameFilter = searchText.value
+                        vm.nameFilter = searchText
                         vm.cleanList()
                         vm.findCharacters()
                     }
@@ -95,11 +97,11 @@ fun MainAppBar(vm: HomeViewModel = hiltViewModel()) {
         actions = {
             IconButton(
                 onClick = {
-                    if (isSearchExpanded.value) {
+                    if (isSearchExpanded) {
                         // RESET
                         keyboardController?.hide()
                         focusManager.clearFocus()
-                        searchText.value = context.getString(R.string.app_name)
+                        searchText = context.getString(R.string.app_name)
 
                         vm.nextPage = 1
                         vm.nameFilter = null
@@ -107,23 +109,23 @@ fun MainAppBar(vm: HomeViewModel = hiltViewModel()) {
                         vm.findCharacters()
                     } else {
                         // SEARCH
-                        if (searchText.value == context.getString(R.string.app_name)) {
-                            searchText.value = ""
+                        if (searchText == context.getString(R.string.app_name)) {
+                            searchText = ""
                         }
                         keyboardController?.show()
                         focusRequester.requestFocus()
                     }
 
-                    isSearchExpanded.value = !isSearchExpanded.value
+                    isSearchExpanded = !isSearchExpanded
                 }) {
 
-                val contentString = if (isSearchExpanded.value)
+                val contentString = if (isSearchExpanded)
                     context.getString(R.string.close)
                 else
                     context.getString(R.string.search)
 
                 Icon(
-                    imageVector = if (isSearchExpanded.value) Icons.Default.Close else Icons.Default.Search,
+                    imageVector = if (isSearchExpanded) Icons.Default.Close else Icons.Default.Search,
                     contentDescription = contentString
                 )
             }

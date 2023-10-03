@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -25,9 +25,9 @@ internal fun CollapsingLayout(
     bodyContent: @Composable BoxScope.() -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var collapsingTopHeight by remember { mutableStateOf(0f) }
+    var collapsingTopHeight by remember { mutableFloatStateOf(0f) }
 
-    var offset by remember { mutableStateOf(0f) }
+    var offset by remember { mutableFloatStateOf(0f) }
 
     fun calculateOffset(delta: Float): Offset {
         val oldOffset = offset

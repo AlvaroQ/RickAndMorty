@@ -25,10 +25,17 @@ fun FilterRow(vm: HomeViewModel = hiltViewModel()) {
             .fillMaxWidth()
     ) {
         FilterMenu(
-            context.getString(R.string.status_filter),
-            statusArray,
+            item = (vm.statusFilter ?: statusArray[0]),
+            section = context.getString(R.string.status_filter),
+            list = statusArray,
             onClick = {
-                vm.statusFilter = if (it == statusArray[0]) null else it
+                vm.statusFilter =
+                    if (it == statusArray[0]) {
+                        null
+                    } else {
+                        it
+                    }
+
                 vm.nextPage = 1
                 vm.cleanList()
                 vm.findCharacters()
@@ -36,10 +43,16 @@ fun FilterRow(vm: HomeViewModel = hiltViewModel()) {
             Modifier.weight(1f)
         )
         FilterMenu(
-            context.getString(R.string.gender_filter),
-            genderArray,
+            item = (vm.genderFilter ?: genderArray[0]),
+            section = context.getString(R.string.gender_filter),
+            list = genderArray,
             onClick = {
-                vm.genderFilter = if (it == statusArray[0]) null else it
+                vm.genderFilter =
+                    if (it == statusArray[0]) {
+                        null
+                    } else {
+                        it
+                    }
                 vm.nextPage = 1
                 vm.cleanList()
                 vm.findCharacters()

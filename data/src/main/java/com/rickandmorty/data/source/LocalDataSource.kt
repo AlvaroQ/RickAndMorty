@@ -6,9 +6,11 @@ import kotlinx.coroutines.flow.Flow
 interface LocalDataSource {
     suspend fun isEmpty(): Boolean
 
-    fun getAllFavoriteCharacters(): Flow<List<Character>>
+    fun allFavoritesFlow(): Flow<List<Character>>
 
-    suspend fun isFavoriteCharacters(character: Character): Boolean
+    suspend fun getAllFavoriteCharacters(): List<Character>
+
+    suspend fun isFavoriteCharacterById(id: Int): Boolean
 
     suspend fun insertFavoriteCharacter(character: Character)
 
