@@ -29,13 +29,8 @@ fun FilterRow(vm: HomeViewModel = hiltViewModel()) {
             section = context.getString(R.string.status_filter),
             list = statusArray,
             onClick = {
-                vm.statusFilter =
-                    if (it == statusArray[0]) {
-                        null
-                    } else {
-                        it
-                    }
-
+                vm.visibleCards = 0
+                vm.statusFilter = if (it == statusArray[0]) null else it
                 vm.nextPage = 1
                 vm.cleanList()
                 vm.findCharacters()
@@ -47,12 +42,8 @@ fun FilterRow(vm: HomeViewModel = hiltViewModel()) {
             section = context.getString(R.string.gender_filter),
             list = genderArray,
             onClick = {
-                vm.genderFilter =
-                    if (it == statusArray[0]) {
-                        null
-                    } else {
-                        it
-                    }
+                vm.visibleCards = 0
+                vm.genderFilter = if (it == statusArray[0]) null else it
                 vm.nextPage = 1
                 vm.cleanList()
                 vm.findCharacters()

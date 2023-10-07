@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListLayoutInfo
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,7 +27,9 @@ import com.rickandmorty.domain.Character
 import com.rickandmorty.ui.composables.ShowError
 import com.rickandmorty.ui.composables.ShowNoMoreItemFound
 import com.rickandmorty.ui.theme.paddingXsmall
+import kotlinx.coroutines.delay
 
+const val DELAY_TO_SHOW_CARD_ANIMATION = 200L
 
 @SuppressLint("FrequentlyChangedStateReadInComposition")
 @ExperimentalFoundationApi
@@ -61,7 +63,8 @@ fun LoadList(
     onClick: (Character) -> Unit,
     listState: LazyListState,
     list: List<Character>,
-    resIdNoItemsFound: Int
+    resIdNoItemsFound: Int,
+    vm: HomeViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
 
@@ -82,12 +85,21 @@ fun LoadList(
                 )
             }
         } else {
-            items(list) {
+            itemsIndexed(list) { index, item ->
                 MediaListItem(
-                    mediaItem = it,
-                    onClick = { onClick(it) },
+                    index = index,
+                    mediaItem = item,
+                    visible = index < vm.visibleCards,
+                    onClick = { onClick(item) },
                     modifier = Modifier.padding(paddingXsmall)
                 )
+
+                LaunchedEffect(vm.visibleCards) {
+                    if (vm.visibleCards < list.size) {
+                        delay(DELAY_TO_SHOW_CARD_ANIMATION)
+                        vm.visibleCards++
+                    }
+                }
             }
         }
     }

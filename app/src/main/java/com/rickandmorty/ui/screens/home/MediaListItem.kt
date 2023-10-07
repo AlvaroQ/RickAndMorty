@@ -1,5 +1,7 @@
 package com.rickandmorty.ui.screens.home
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -18,31 +20,62 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.rickandmorty.R
 import com.rickandmorty.domain.Character
+import com.rickandmorty.ui.composables.FavScaleAnimation
 import com.rickandmorty.ui.theme.Red
 import com.rickandmorty.ui.theme.RickAndMortyTheme
 import com.rickandmorty.ui.theme.cellWidth
 import com.rickandmorty.ui.theme.favWidth
 import com.rickandmorty.ui.theme.paddingMedium
+import kotlinx.coroutines.delay
 
+const val DELAY_ANIMATED_VISIBILITY = 70L
+
+@Suppress("LongParameterList", "LongMethod")
 @Composable
 fun MediaListItem(
+    index: Int,
     mediaItem: Character,
+    visible: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     vm: HomeViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val clickEnabled = remember { mutableStateOf(true) }
+    var selected by remember { mutableStateOf(false) }
+    val scale = remember { Animatable(initialValue = 1f) }
+    FavScaleAnimation(selected, clickEnabled, scale, mediaItem.favorite)
+
+
+    val animatedVisibility = remember {
+        Animatable(if (visible) 1f else 0f)
+    }
+
+    LaunchedEffect(index) {
+        delay(index * DELAY_ANIMATED_VISIBILITY)
+        animatedVisibility.animateTo(1f, animationSpec = tween(durationMillis = 150))
+    }
+
     RickAndMortyTheme {
         Card(
-            modifier = modifier.clickable { onClick() }
+            modifier = modifier
+                .alpha(animatedVisibility.value)
+                .clickable { onClick() }
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -85,8 +118,14 @@ fun MediaListItem(
                         .width(cellWidth)
                 ) {
                     IconButton(
-                        onClick = { vm.saveFavorite(!mediaItem.favorite, mediaItem) },
+                        onClick = {
+                            if (clickEnabled.value) {
+                                if (!mediaItem.favorite) selected = !selected
+                                vm.saveFavorite(!mediaItem.favorite, mediaItem)
+                            }
+                        },
                         modifier = Modifier
+                            .scale(scale = scale.value)
                             .height(favWidth)
                             .width(favWidth)
                     ) {

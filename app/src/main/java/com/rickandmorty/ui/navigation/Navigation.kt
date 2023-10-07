@@ -1,5 +1,8 @@
 package com.rickandmorty.ui.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavBackStackEntry
@@ -10,6 +13,8 @@ import androidx.navigation.compose.rememberNavController
 import com.rickandmorty.ui.screens.detail.DetailScreen
 import com.rickandmorty.ui.screens.home.HomeScreen
 
+const val TRANSITION_TIME = 300
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Navigation() {
@@ -17,7 +22,19 @@ fun Navigation() {
 
     NavHost(
         navController = navController,
-        startDestination = NavItem.Home.route
+        startDestination = NavItem.Home.route,
+        enterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { it },
+                animationSpec = tween(TRANSITION_TIME)
+            )
+        },
+        exitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { it },
+                animationSpec = tween(durationMillis = TRANSITION_TIME)
+            )
+        }
     ) {
         composable(NavItem.Home) {
             HomeScreen(onNavigate = {

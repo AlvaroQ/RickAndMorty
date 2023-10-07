@@ -1,6 +1,7 @@
 package com.rickandmorty.ui.screens.detail
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,9 +25,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.core.text.buildSpannedString
@@ -37,6 +43,7 @@ import com.rickandmorty.common.shareCharacter
 import com.rickandmorty.domain.Character
 import com.rickandmorty.ui.composables.ArrowBackIcon
 import com.rickandmorty.ui.composables.CenteredCircularProgressIndicator
+import com.rickandmorty.ui.composables.FavScaleAnimation
 import com.rickandmorty.ui.composables.ShowError
 import com.rickandmorty.ui.theme.Red
 import com.rickandmorty.ui.theme.RickAndMortyTheme
@@ -119,9 +126,20 @@ fun DetailScreen(characterId: Int, onUpClick: () -> Unit, vm: DetailViewModel = 
 private fun FloatingBtn(character: Character, vm: DetailViewModel = hiltViewModel()) {
     val context = LocalContext.current
 
+    val clickEnabled = remember { mutableStateOf(true) }
+    var selected by remember { mutableStateOf(false) }
+    val scale = remember { Animatable(initialValue = 1f) }
+    FavScaleAnimation(selected, clickEnabled, scale, character.favorite)
+
     FloatingActionButton(
+        modifier = Modifier.scale(scale = scale.value),
         containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-        onClick = { vm.saveFavorite(!character.favorite, character) }
+        onClick = {
+            if (clickEnabled.value) {
+                selected = !character.favorite
+                vm.saveFavorite(!character.favorite, character)
+            }
+        }
     ) {
         Icon(
             imageVector = if (character.favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,

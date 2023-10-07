@@ -65,6 +65,7 @@ fun MainAppBar(vm: HomeViewModel = hiltViewModel()) {
                         keyboardController?.hide()
                         focusManager.clearFocus()
 
+                        vm.visibleCards = 0
                         vm.nextPage = 1
                         vm.nameFilter = searchText
                         vm.cleanList()

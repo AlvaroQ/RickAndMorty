@@ -26,6 +26,7 @@ class HomeViewModel @Inject constructor(
     private val updateFavoriteUseCase: UpdateFavoriteCharacterUseCase,
     private val getAllCharacterUseCase: GetAllCharacterUseCase
 ) : ViewModel() {
+    var visibleCards: Int = 0
     var nameFilter: String? = null
     var genderFilter: String? = null
     var statusFilter: String? = null
@@ -41,12 +42,9 @@ class HomeViewModel @Inject constructor(
     val favState: StateFlow<List<Character>> = _favState.asStateFlow()
 
     init {
-        findCharacters()
-
         viewModelScope.launch {
-            allFavoriteCharactersFlowUseCase().collect { favoritesList ->
-                _favState.value = favoriteListFiltered(favoritesList)
-            }
+            requestCharacters()
+            requestFavCharacters()
         }
     }
 
@@ -62,13 +60,12 @@ class HomeViewModel @Inject constructor(
     }
 
     fun findCharacters() {
-        if (selectedTabIndex == TAB_CHARACTERS) {
-            // Server characters
-            viewModelScope.launch {
-                _state.update { it.copy(loading = true) }
+        visibleCards = 0
+        viewModelScope.launch {
+            if (selectedTabIndex == TAB_CHARACTERS) {
                 requestCharacters()
-                delay(DELAY_TO_REFRESH_LIST)
-                _state.update { it.copy(loading = false) }
+            } else {
+                requestFavCharacters()
             }
         }
     }
@@ -100,6 +97,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private suspend fun requestCharacters() {
+        _state.update { it.copy(loading = true) }
         val characterListResponse = getAllCharacterUseCase(
             page = nextPage,
             nameFiltered = nameFilter,
@@ -127,21 +125,21 @@ class HomeViewModel @Inject constructor(
                 _state.update { it.copy(noMoreItemFound = true) }
             }
         })
+        delay(DELAY_TO_REFRESH_LIST)
+        _state.update { it.copy(loading = false) }
     }
 
     fun saveFavorite(isFavorite: Boolean, character: Character) {
         viewModelScope.launch {
             _state.update { it.copy(loading = true) }
             updateFavoriteUseCase(isFavorite, character)
-
-//            val characterList = _state.value.characterList?.map {
-//                if (character.id == it.id) it.copy(favorite = isFavorite)
-//                else it
-//            }
-
-//            _state.update { UiState(characterList = characterList) }
-//            _favState.value = favoriteListFiltered(getAllFavoritesUseCase())
             _state.update { it.copy(loading = false) }
+        }
+    }
+
+    private suspend fun requestFavCharacters() {
+        allFavoriteCharactersFlowUseCase().collect { favoritesList ->
+            _favState.value = favoriteListFiltered(favoritesList)
         }
     }
 
