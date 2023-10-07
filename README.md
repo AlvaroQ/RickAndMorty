@@ -1,17 +1,19 @@
-# RickAndMorty
+# RickAndMorty Android App
 
 ![banner](https://github.com/AlvaroQ/RickAndMorty/blob/main/capture/Landing.jpg)
 
 An Compose Application example using https://rickandmortyapi.com/
 
-# Kotlin - Clean Architecture following SOLID principles and MVVM presentation pattern
+## Kotlin - Clean Architecture following SOLID principles and MVVM presentation pattern
 
 Single Responsibility Principle, Open/Closed Principle, Liskov Substitution Principle, Interface
 Segregation Principle and Dependency Inversion Principle
 Use cases with a CharacterRepository and Character and Local data source
 Gradle’s Kotlin DSL and Kotlin Symbol Processing (KSP)
 
-<img src="https://github.com/AlvaroQ/RickAndMorty/blob/main/capture/clean_architecture.jpg" width="250" alt="clean_architecture">
+<p align="center">
+  <img src="https://github.com/AlvaroQ/RickAndMorty/blob/main/capture/clean_architecture.jpg" width="250" alt="clean_architecture">
+</p>
 
 ## Compose
 
@@ -36,12 +38,13 @@ Showing cards sequentially on LazyColumn
   <img src="https://github.com/AlvaroQ/RickAndMorty/blob/main/capture/sequentially_cards.gif" width="250" alt="sequentially_cards">
 </p>
 
-## Multi-filter
+## Multi-filter with pagination
 
 Filtered results with Status (All/Alive/Dead/Unknow), Gender(All/Female/Male/Genderless/Unknow) and
 naming with scroll-end pagination.
-
-<img src="https://github.com/AlvaroQ/RickAndMorty/blob/main/capture/filters_and_paging.jpg" width="250" alt="clean_architecture">
+<p align="center">
+  <img src="https://github.com/AlvaroQ/RickAndMorty/blob/main/capture/filters_and_paging.jpg" width="250" alt="clean_architecture">
+</p>
 
 ## Injector and Android Architecture Components (AAC)
 
@@ -51,8 +54,6 @@ state holders, like StateFlow
 ## Error handling
 
 I use the Arrow library to handle the error/result pair as follows:
-
-<pre><code>Either<Error, Result></code></pre>
 <pre><code>UseCase().fold({ exception -> { } }, { result -> { }})</code></pre>
 
 ## Local storage
@@ -66,18 +67,20 @@ Dark and light depending system theme
 <pre><code>
 @Composable
 fun RickAndMortyTheme(darkTheme: Boolean = isSystemInDarkTheme(),content: @Composable () -> Unit) {
-val colors = if (darkTheme) {
-DarkColorScheme
-} else {
-LightColorScheme
-}
+    val colors = if (darkTheme) {
+        DarkColorScheme
+    } else {
+        LightColorScheme
+    }
 }
 </code></pre>
 
 ## Analysis tool
 
 Detekt code analysis tool
-<img src="https://github.com/AlvaroQ/RickAndMorty/blob/main/capture/detekt_report.jpg" width="600" alt="Detekt">
+<p align="center">
+  <img src="https://github.com/AlvaroQ/RickAndMorty/blob/main/capture/detekt_report.jpg" width="600" alt="Detekt">
+</p>
 
 ## License
 
