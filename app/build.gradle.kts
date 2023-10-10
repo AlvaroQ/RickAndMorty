@@ -56,7 +56,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
     }
-    packagingOptions {
+    packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -64,7 +64,6 @@ android {
 }
 
 dependencies {
-    detektPlugins("ru.kode:detekt-rules-compose:1.3.0")
     implementation(project(":data"))
     implementation(project(":domain"))
     implementation(project(":usecases"))
@@ -83,11 +82,11 @@ dependencies {
     implementation(Libs.AndroidX.Activity.compose)
     implementation(Libs.AndroidX.Compose.Material3.material3)
     implementation(Libs.AndroidX.Compose.UI.ui)
-    implementation(Libs.AndroidX.Compose.UI.toolingPreview)
     implementation(Libs.AndroidX.Navigation.compose)
     implementation(Libs.Coil.compose)
     implementation(Libs.AndroidX.Room.runtime)
     implementation(Libs.AndroidX.Room.ktx)
+    detektPlugins(Libs.Detekt.rulesCompose)
 
     ksp(Libs.AndroidX.Room.compiler)
     ksp(Libs.Hilt.compiler)

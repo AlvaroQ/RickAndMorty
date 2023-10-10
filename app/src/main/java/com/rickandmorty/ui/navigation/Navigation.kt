@@ -63,7 +63,7 @@ private fun NavGraphBuilder.composable(
 }
 
 private inline fun <reified T> NavBackStackEntry.findArg(key: String): T {
-    val value = arguments?.get(key)
+    val value = arguments?.getInt(key)
     requireNotNull(value)
     return value as T
 }
