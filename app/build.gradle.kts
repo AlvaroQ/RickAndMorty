@@ -68,7 +68,6 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":usecases"))
 
-    implementation(Libs.Glide.glide)
     implementation(Libs.AndroidX.Navigation.fragmentKtx)
     implementation(Libs.AndroidX.constraintLayout)
     implementation(Libs.AndroidX.appCompat)
@@ -87,6 +86,7 @@ dependencies {
     implementation(Libs.AndroidX.Room.runtime)
     implementation(Libs.AndroidX.Room.ktx)
     detektPlugins(Libs.Detekt.rulesCompose)
+    implementation(Libs.Lottie.compose)
 
     ksp(Libs.AndroidX.Room.compiler)
     ksp(Libs.Hilt.compiler)

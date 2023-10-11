@@ -17,6 +17,11 @@ object Gradle {
 }
 
 object Libs {
+    object Lottie {
+        private const val lottieVersion = "6.1.0"
+        const val compose = "com.airbnb.android:lottie-compose:$lottieVersion"
+    }
+
     object Retrofit {
         private const val version = "2.9.0"
         const val retrofit = "com.squareup.retrofit2:retrofit:$version"
@@ -145,6 +150,11 @@ object Libs {
     object JUnit {
         private const val version = "4.13.2"
         const val junit = "junit:junit:$version"
+    }
+
+    object Detekt {
+        private const val version = "1.3.0"
+        const val rulesCompose = "ru.kode:detekt-rules-compose::$version"
     }
 
     object Mockito {

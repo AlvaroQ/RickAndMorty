@@ -7,6 +7,7 @@ sealed class NavItem(
     internal val baseRoute: String,
     private val navArgs: List<NavArgs> = emptyList()
 ) {
+    object Splash : NavItem("splash")
     object Home : NavItem("home")
     object Detail : NavItem("detail", listOf(NavArgs.CharacterId)) {
         fun createRoute(characterId: Int) = "$baseRoute/$characterId"

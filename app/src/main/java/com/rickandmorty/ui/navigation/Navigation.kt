@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.rickandmorty.ui.screens.detail.DetailScreen
 import com.rickandmorty.ui.screens.home.HomeScreen
+import com.rickandmorty.ui.screens.splash.SplashScreen
 
 const val TRANSITION_TIME = 300
 
@@ -22,7 +23,7 @@ fun Navigation() {
 
     NavHost(
         navController = navController,
-        startDestination = NavItem.Home.route,
+        startDestination = NavItem.Splash.route,
         enterTransition = {
             slideInHorizontally(
                 initialOffsetX = { it },
@@ -36,6 +37,11 @@ fun Navigation() {
             )
         }
     ) {
+        composable(NavItem.Splash) {
+            SplashScreen(onNavigate = {
+                navController.navigate(NavItem.Home.route)
+            })
+        }
         composable(NavItem.Home) {
             HomeScreen(onNavigate = {
                 navController.navigate(NavItem.Detail.createRoute(it))
