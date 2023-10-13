@@ -19,3 +19,38 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Global rule
+-keepattributes Signature
+-keepattributes *Annotation*
+-keepattributes EnclosingMethod
+-keepattributes InnerClasses
+
+# For using GSON @Expose annotation
+-keepattributes *Annotation*
+-dontwarn sun.misc.**
+-keep class * implements com.google.gson.TypeAdapterFactory
+-keep class * implements com.google.gson.JsonSerializer
+-keep class * implements com.google.gson.JsonDeserializer
+
+# Application classes that will be serialized/deserialized over Gson
+-keepclassmembers class com.rickandmorty.domain.* { *; }
+-keep class com.rickandmorty.domain.* { *; }
+
+#-keep class * extends com.google.protobuf.GeneratedMessageLite { *; }
+-keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
+
+-ignorewarnings
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-dontwarn javax.annotation.**
+-dontwarn org.conscrypt.**
+-dontwarn com.squareup.okhttp.**
+-dontnote junit.framework.**
+-dontnote junit.runner.**
+-dontwarn android.test.**
+-dontwarn android.support.test.**
+-dontwarn org.junit.**
+-dontwarn org.hamcrest.**
+-dontwarn com.squareup.javawriter.JavaWriter
+-dontwarn org.mockito.**

@@ -10,6 +10,15 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        create("release") {
+            storeFile = file(findProperty("RICKANDMORTY_RELEASE_STORE_FILE").toString())
+            storePassword = findProperty("RICKANDMORTY_RELEASE_STORE_PASSWORD").toString()
+            keyAlias = findProperty("RICKANDMORTY_RELEASE_KEY_ALIAS").toString()
+            keyPassword = findProperty("RICKANDMORTY_RELEASE_KEY_PASSWORD").toString()
+        }
+    }
+
     namespace = Config.applicationId
     compileSdk = Config.compileSdk
 
@@ -23,6 +32,7 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        signingConfig = signingConfigs.getByName("release")
     }
 
     buildTypes {

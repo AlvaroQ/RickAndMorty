@@ -18,3 +18,5 @@ local.properties
 *.MF
 *.bin
 /buildsrc/build
+*.aab
+signature/

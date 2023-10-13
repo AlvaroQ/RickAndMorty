@@ -5,6 +5,7 @@
     <a href="https://dagger.dev/hilt/"><img alt="Hilt" src="https://img.shields.io/badge/hilt-2.47-yellow"/></a>
     <a href="https://detekt.dev/"><img alt="Detekt" src="https://img.shields.io/badge/detekt-1.3.0-blue"/></a>
     <a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-blue.svg"/></a>
+    <a href="https://app.bitrise.io/"><img alt="Bitrise" src="https://img.shields.io/badge/bitrise-8A2BE2"/></a>
 </p>
 
 <p align="center">
