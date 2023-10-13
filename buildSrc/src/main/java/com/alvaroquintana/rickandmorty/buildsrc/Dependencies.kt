@@ -5,8 +5,8 @@ object Config {
     const val minSdk = 26
     const val targetSdk = 34
     const val compileSdk = 34
-    const val name = "0.0.1"
-    const val code = 1
+    const val name = "0.0.3"
+    const val code = 3
 }
 
 object Gradle {
