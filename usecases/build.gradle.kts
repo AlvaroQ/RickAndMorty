@@ -1,4 +1,4 @@
-import com.rickandmorty.buildsrc.Libs
+import com.alvaroquintana.rickandmorty.buildsrc.Libs
 
 plugins {
     id("java-library")

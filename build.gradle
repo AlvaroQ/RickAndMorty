@@ -1,5 +1,5 @@
-import com.rickandmorty.buildsrc.Gradle
-import com.rickandmorty.buildsrc.Libs
+import com.alvaroquintana.rickandmorty.buildsrc.Gradle
+import com.alvaroquintana.rickandmorty.buildsrc.Libs
 
 buildscript {
     repositories {

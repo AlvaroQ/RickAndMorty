@@ -34,8 +34,8 @@
 -keep class * implements com.google.gson.JsonDeserializer
 
 # Application classes that will be serialized/deserialized over Gson
--keepclassmembers class com.rickandmorty.domain.* { *; }
--keep class com.rickandmorty.domain.* { *; }
+-keepclassmembers class com.alvaroquintana.rickandmorty.domain.* { *; }
+-keep class com.alvaroquintana.rickandmorty.domain.* { *; }
 
 #-keep class * extends com.google.protobuf.GeneratedMessageLite { *; }
 -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation

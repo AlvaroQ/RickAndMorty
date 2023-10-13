@@ -1,5 +1,5 @@
-import com.rickandmorty.buildsrc.Config
-import com.rickandmorty.buildsrc.Libs
+import com.alvaroquintana.rickandmorty.buildsrc.Config
+import com.alvaroquintana.rickandmorty.buildsrc.Libs
 
 plugins {
     id("com.android.application")
