@@ -64,60 +64,59 @@ fun DetailScreen(characterId: Int, onUpClick: () -> Unit, vm: DetailViewModel = 
         vm.findCharacter(characterId = characterId)
     }
 
-    RickAndMortyTheme {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text(text = character?.name ?: "") },
-                    navigationIcon = { ArrowBackIcon(onUpClick) },
-                    actions = {
-                        IconButton(onClick = {
-                            character?.let { character ->
-                                context.shareCharacter(character.name, character.url)
-                            }
-                        }) {
-                            Icon(
-                                imageVector = Icons.Default.Share,
-                                contentDescription = context.getString(R.string.share)
-                            )
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = character?.name ?: "") },
+                navigationIcon = { ArrowBackIcon(onUpClick) },
+                actions = {
+                    IconButton(onClick = {
+                        character?.let { character ->
+                            context.shareCharacter(character.name, character.url)
                         }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Share,
+                            contentDescription = context.getString(R.string.share)
+                        )
                     }
-                )
-            },
-            floatingActionButton = {
-                character?.let { character ->
-                    FloatingBtn(character, vm)
                 }
-            },
-        ) { padding ->
+            )
+        },
+        floatingActionButton = {
+            character?.let { character ->
+                FloatingBtn(character, vm)
+            }
+        },
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+        ) {
+            AsyncImage(
+                model = character?.image,
+                contentDescription = context.getString(R.string.image),
+                modifier = Modifier
+                    .height(descriptionHeight)
+                    .fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+
             Column(
                 modifier = Modifier
-                    .padding(padding)
+                    .padding(20.dp)
                     .fillMaxSize()
-                    .verticalScroll(scrollState)
             ) {
-                AsyncImage(
-                    model = character?.image,
-                    contentDescription = context.getString(R.string.image),
-                    modifier = Modifier
-                        .height(descriptionHeight)
-                        .fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-
-                Column(
-                    modifier = Modifier
-                        .padding(20.dp)
-                        .fillMaxSize()
-                ) {
-                    character?.let { character ->
-                        FillContent(character)
-                    }
+                character?.let { character ->
+                    FillContent(character)
                 }
             }
         }
-        CenteredCircularProgressIndicator(state.loading)
     }
+    CenteredCircularProgressIndicator(state.loading)
+
     ShowError(error)
 }
 

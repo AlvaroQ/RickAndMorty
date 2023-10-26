@@ -7,23 +7,20 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.alvaroquintana.rickandmorty.ui.composables.CollapsingLayout
-import com.alvaroquintana.rickandmorty.ui.theme.RickAndMortyTheme
 
 @ExperimentalFoundationApi
 @Composable
 fun HomeScreen(onNavigate: (Int) -> Unit) {
-    RickAndMortyTheme {
-        Scaffold(
-            topBar = { MainAppBar() },
-            content = { padding ->
-                CollapsingLayout(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(padding),
-                    collapsingTop = { FilterRow() },
-                    bodyContent = { TabbedView(onNavigate = onNavigate) }
-                )
-            }
-        )
-    }
+    Scaffold(
+        topBar = { MainAppBar() },
+        content = { padding ->
+            CollapsingLayout(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(padding),
+                collapsingTop = { FilterRow() },
+                bodyContent = { TabbedView(onNavigate = onNavigate) }
+            )
+        }
+    )
 }

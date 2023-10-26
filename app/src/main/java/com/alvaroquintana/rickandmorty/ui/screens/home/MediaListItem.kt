@@ -37,7 +37,6 @@ import com.alvaroquintana.rickandmorty.R
 import com.alvaroquintana.rickandmorty.domain.Character
 import com.alvaroquintana.rickandmorty.ui.composables.FavScaleAnimation
 import com.alvaroquintana.rickandmorty.ui.theme.Red
-import com.alvaroquintana.rickandmorty.ui.theme.RickAndMortyTheme
 import com.alvaroquintana.rickandmorty.ui.theme.cellWidth
 import com.alvaroquintana.rickandmorty.ui.theme.favWidth
 import com.alvaroquintana.rickandmorty.ui.theme.paddingMedium
@@ -71,72 +70,70 @@ fun MediaListItem(
         animatedVisibility.animateTo(1f, animationSpec = tween(durationMillis = 150))
     }
 
-    RickAndMortyTheme {
-        Card(
-            modifier = modifier
-                .alpha(animatedVisibility.value)
-                .clickable { onClick() }
+    Card(
+        modifier = modifier
+            .alpha(animatedVisibility.value)
+            .clickable { onClick() }
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .background(MaterialTheme.colorScheme.primary)
+                .fillMaxWidth()
+                .padding(paddingMedium)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+            // Icon
+            Box(
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.primary)
+                    .height(cellWidth)
+                    .width(cellWidth)
+            ) {
+                AsyncImage(
+                    model = mediaItem.image,
+                    contentDescription = context.getString(R.string.image),
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            // TEXT
+            Box(
+                modifier = Modifier
                     .fillMaxWidth()
+                    .weight(1f)
                     .padding(paddingMedium)
             ) {
-                // Icon
-                Box(
-                    modifier = Modifier
-                        .height(cellWidth)
-                        .width(cellWidth)
-                ) {
-                    AsyncImage(
-                        model = mediaItem.image,
-                        contentDescription = context.getString(R.string.image),
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                }
+                Text(
+                    text = mediaItem.name,
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
 
-                // TEXT
-                Box(
+            // FAV
+            Box(
+                modifier = Modifier
+                    .height(cellWidth)
+                    .width(cellWidth)
+            ) {
+                IconButton(
+                    onClick = {
+                        if (clickEnabled.value) {
+                            if (!mediaItem.favorite) selected = !selected
+                            vm.saveFavorite(!mediaItem.favorite, mediaItem)
+                        }
+                    },
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .padding(paddingMedium)
+                        .scale(scale = scale.value)
+                        .height(favWidth)
+                        .width(favWidth)
                 ) {
-                    Text(
-                        text = mediaItem.name,
-                        style = MaterialTheme.typography.titleMedium
+                    val icons =
+                        if (mediaItem.favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder
+                    Icon(
+                        imageVector = icons,
+                        tint = Red,
+                        contentDescription = context.getString(R.string.favorite)
                     )
-                }
-
-                // FAV
-                Box(
-                    modifier = Modifier
-                        .height(cellWidth)
-                        .width(cellWidth)
-                ) {
-                    IconButton(
-                        onClick = {
-                            if (clickEnabled.value) {
-                                if (!mediaItem.favorite) selected = !selected
-                                vm.saveFavorite(!mediaItem.favorite, mediaItem)
-                            }
-                        },
-                        modifier = Modifier
-                            .scale(scale = scale.value)
-                            .height(favWidth)
-                            .width(favWidth)
-                    ) {
-                        val icons =
-                            if (mediaItem.favorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder
-                        Icon(
-                            imageVector = icons,
-                            tint = Red,
-                            contentDescription = context.getString(R.string.favorite)
-                        )
-                    }
                 }
             }
         }
